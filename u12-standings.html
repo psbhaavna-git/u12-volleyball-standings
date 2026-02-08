@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>U12 Power League Standings - PSR Volleyball</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .update-info {
+            background: #f8f9fa;
+            padding: 15px 30px;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .last-updated {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+
+        .refresh-timer {
+            font-size: 0.9em;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .standings-wrapper {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95em;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        th.rank {
+            width: 60px;
+            text-align: center;
+        }
+
+        th.points {
+            width: 100px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        tbody tr:nth-child(even):hover {
+            background: #f1f3f5;
+        }
+
+        td {
+            padding: 15px 12px;
+        }
+
+        td.rank {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        td.points {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Medal colors for top 3 */
+        tbody tr:nth-child(1) td.rank {
+            color: #FFD700;
+            font-size: 1.3em;
+        }
+
+        tbody tr:nth-child(2) td.rank {
+            color: #C0C0C0;
+            font-size: 1.2em;
+        }
+
+        tbody tr:nth-child(3) td.rank {
+            color: #CD7F32;
+            font-size: 1.15em;
+        }
+
+        tbody tr:nth-child(1) {
+            background: linear-gradient(90deg, #fff9e6 0%, #ffffff 100%);
+        }
+
+        tbody tr:nth-child(2) {
+            background: linear-gradient(90deg, #f5f5f5 0%, #ffffff 100%);
+        }
+
+        tbody tr:nth-child(3) {
+            background: linear-gradient(90deg, #fff4e6 0%, #ffffff 100%);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2em;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            border-top: 2px solid #e9ecef;
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .standings-wrapper {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                font-size: 0.9em;
+            }
+
+            .update-info {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏐 U12 Power League Standings</h1>
+            <p>Puget Sound Region Volleyball - 2026 Season</p>
+        </div>
+
+        <div class="update-info">
+            <div class="last-updated">
+                Last Updated: <span id="lastUpdate">Loading...</span>
+            </div>
+            <div class="refresh-timer">
+                Auto-refresh in: <span id="countdown">60</span>s
+            </div>
+        </div>
+
+        <div class="standings-wrapper">
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                Loading standings...
+            </div>
+
+            <table id="standingsTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="rank">Rank</th>
+                        <th>Team Name</th>
+                        <th class="points">Points</th>
+                    </tr>
+                </thead>
+                <tbody id="standingsBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            Data from <a href="https://www.psrvb.org/power-league" target="_blank">PSR Volleyball</a> | 
+            Standings updated every Tuesday following play dates
+        </div>
+    </div>
+
+    <script>
+        // Initial standings data (from PL#1 as of 1/26/26)
+        const standingsData = [
+            { rank: 1, team: "PJVBC 12 National", code: "g12puyal1ps", points: 715.00 },
+            { rank: 2, team: "Ignite 12 Red", code: "g12ignit1ps", points: 700.00 },
+            { rank: 3, team: "Blue Royals 12 Jewel", code: "g12brvba1ps", points: 695.00 },
+            { rank: 4, team: "SIVBC 12 Monsoon", code: "g12sudni1ps", points: 690.00 },
+            { rank: 5, team: "Foothills Teal U12", code: "g12fhvbc1ps", points: 685.00 },
+            { rank: 6, team: "Blue Royals 12 Bling", code: "g12brvba2ps", points: 680.00 },
+            { rank: 7, team: "DaKine U12 National Pink", code: "g12dakwa1ps", points: 675.00 },
+            { rank: 8, team: "SVA 12-Joe", code: "g12sevba1ps", points: 670.00 },
+            { rank: 9, team: "253 Elite u12 Elua", code: "g12253vb1ps", points: 665.00 },
+            { rank: 10, team: "3N1 U12 Teal", code: "g123n1fa1ps", points: 660.00 },
+            { rank: 11, team: "RSVBC 12-1", code: "g12realt1ps", points: 655.00 },
+            { rank: 12, team: "Capital Ice 12's", code: "g12capit1ps", points: 650.00 },
+            { rank: 13, team: "FEVA U12", code: "g12falco1ps", points: 645.00 },
+            { rank: 14, team: "Blue Royals 12 Gem", code: "g12brvba3ps", points: 640.00 },
+            { rank: 15, team: "Emerald Rain 12 Elite", code: "g12emrvb2ps", points: 635.00 },
+            { rank: 16, team: "PSVBA 12 Elite", code: "g12psvba1ps", points: 630.00 },
+            { rank: 17, team: "NPJ Seattle 12 National", code: "g12npjse1ps", points: 625.00 },
+            { rank: 18, team: "All Out U12", code: "g12allot1ps", points: 620.00 },
+            { rank: 19, team: "ITVC 12 Baden", code: "g12islan1ps", points: 615.00 },
+            { rank: 20, team: "WS Reign VBC 12-1", code: "g12wsrsp1ps", points: 610.00 },
+            { rank: 21, team: "Cascade U12", code: "g12casca1ps", points: 605.00 },
+            { rank: 22, team: "SIVBC 12 Rain", code: "g12sudni2ps", points: 600.00 },
+            { rank: 23, team: "WVBA 12 adidas", code: "g12wavba1ps", points: 595.00 },
+            { rank: 24, team: "Oly Reign 12 Gold", code: "g12olyrn1ps", points: 590.00 },
+            { rank: 25, team: "PJVBC 12 Elite", code: "g12puyal2ps", points: 585.00 },
+            { rank: 26, team: "3N1 U12 Purple", code: "g123n1fa2ps", points: 580.00 },
+            { rank: 27, team: "PJVBC 11 National", code: "g11puyal1ps", points: 575.00 },
+            { rank: 28, team: "NPJ Seattle 12 Black", code: "g12npjse2ps", points: 570.00 },
+            { rank: 29, team: "Gorin U12", code: "g12gorvb1ps", points: 565.00 },
+            { rank: 30, team: "SEVC U12 National", code: "g12soejr1ps", points: 560.00 },
+            { rank: 31, team: "NPJ Seattle 11 National", code: "g11npjse1ps", points: 555.00 },
+            { rank: 32, team: "Podio Sports 12s", code: "g12podio1ps", points: 550.00 },
+            { rank: 33, team: "Oly Reign 12 Silver", code: "g12olyrn3ps", points: 545.00 },
+            { rank: 34, team: "Foothills Black U12", code: "g12fhvbc2ps", points: 540.00 },
+            { rank: 35, team: "Blue Royals 11 Sparkle", code: "g11brvba1ps", points: 535.00 },
+            { rank: 36, team: "Momentum One 12 Tsunami", code: "g12mova11ps", points: 530.00 },
+            { rank: 37, team: "NW Jrs. 12 Blue", code: "g12nwest1ps", points: 525.00 },
+            { rank: 38, team: "NW Jrs. 12 Black", code: "g12nwest2ps", points: 520.00 },
+            { rank: 39, team: "WS Reign VBC 11-1", code: "g11wsrsp1ps", points: 515.00 },
+            { rank: 40, team: "Emerald Raindrops 12-2", code: "g12emrvb3ps", points: 510.00 },
+            { rank: 41, team: "Prism 12 Opal", code: "g12prism1ps", points: 505.00 },
+            { rank: 42, team: "RSVBC 12-2", code: "g12realt2ps", points: 500.00 },
+            { rank: 43, team: "Emerald Raindrops 12-1", code: "g12emrvb1ps", points: 495.00 },
+            { rank: 44, team: "OPVBC 12 Strikers", code: "g12olypr1ps", points: 490.00 },
+            { rank: 45, team: "PNW TL 12-1", code: "g12pactl1ce", points: 485.00 },
+            { rank: 46, team: "NW Jrs. 11 Blue", code: "g11nwest1ps", points: 480.00 },
+            { rank: 47, team: "Oly Reign 12 Blue", code: "g12olyrn2ps", points: 475.00 },
+            { rank: 48, team: "PJVBC 12 Select", code: "g12puyal3ps", points: 470.00 },
+            { rank: 49, team: "PJVBC 11 Elite", code: "g11puyal2ps", points: 465.00 },
+            { rank: 50, team: "Oly Reign 12 White", code: "g12olyrn4ps", points: 460.00 },
+            { rank: 51, team: "Foothills White U12", code: "g12fhvbc3ps", points: 455.00 }
+        ];
+
+        function populateStandings() {
+            const tbody = document.getElementById('standingsBody');
+            tbody.innerHTML = '';
+
+            standingsData.forEach(team => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="rank">${team.rank}</td>
+                    <td>${team.team}</td>
+                    <td class="points">${team.points.toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('loadingIndicator').style.display = 'none';
+            document.getElementById('standingsTable').style.display = 'table';
+        }
+
+        function updateLastUpdated() {
+            const now = new Date();
+            const options = { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            document.getElementById('lastUpdate').textContent = now.toLocaleString('en-US', options);
+        }
+
+        let countdown = 60;
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdown');
+            
+            const interval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    countdown = 60;
+                    updateLastUpdated();
+                    // In a real implementation, this would fetch new data from the server
+                    populateStandings();
+                }
+            }, 1000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            populateStandings();
+            updateLastUpdated();
+            startCountdown();
+        });
+    </script>
+</body>
+</html>
