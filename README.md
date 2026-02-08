@@ -2,7 +2,7 @@
 
 Live standings tracker for U12 teams in the Puget Sound Region Volleyball Power League.
 
-🏐 **[View Live Standings](https://yourusername.github.io/u12-volleyball-standings)** _(Replace with your actual URL)_
+🏐 **[View Live Standings]([https://yourusername.github.io/u12-volleyball-standings])
 
 ## About
 
