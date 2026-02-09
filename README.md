@@ -1,8 +1,7 @@
 # U12 Volleyball Standings - PSR Power League
 
-Live standings tracker for U12 teams in the Puget Sound Region Volleyball Power League.
+Live standings tracker for teams in the Puget Sound Region Volleyball Power League.
 
-https://psbhaavna-git.github.io/u12-volleyball-standings/index.html
 
 ## About
 
