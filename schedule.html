@@ -378,6 +378,9 @@
                         <option value="U18">U18 Only</option>
                     </select>
                     <div id="filterCount" style="margin-top: 10px; color: #6c757d; font-size: 0.9em; text-align: center;"></div>
+                    <div style="margin-top: 10px; text-align: center; color: #28a745; font-weight: 600; font-size: 0.9em;">
+                        🔄 Auto-updating schedule | Last update: <span id="lastScheduleUpdate">Just now</span>
+                    </div>
                 </div>
             </div>
 
@@ -480,6 +483,8 @@
     </div>
 
     <script>
+        let scheduleRefreshInterval;
+
         // Filter schedule by division
         function filterSchedule() {
             const filterValue = document.getElementById('divisionFilter').value;
@@ -515,17 +520,47 @@
             eventCards.forEach(card => {
                 const dateText = card.querySelector('.event-date').textContent;
                 // Simple date matching - in production, you'd parse dates properly
-                if (dateText.includes('February 8, 2026')) {
+                if (dateText.includes('February 8, 2026') || dateText.includes('February 9, 2026')) {
                     card.classList.add('current');
-                    card.querySelector('.event-status').textContent = 'Today';
-                    card.querySelector('.event-status').classList.add('status-current');
+                    const statusEl = card.querySelector('.event-status');
+                    if (statusEl) {
+                        statusEl.textContent = 'Today';
+                        statusEl.classList.add('status-current');
+                    }
                 }
             });
+            
+            // Update last update time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            const updateEl = document.getElementById('lastScheduleUpdate');
+            if (updateEl) {
+                updateEl.textContent = timeString;
+            }
+        }
+
+        function startScheduleRefresh() {
+            if (scheduleRefreshInterval) {
+                clearInterval(scheduleRefreshInterval);
+            }
+            
+            // Update every 60 seconds
+            scheduleRefreshInterval = setInterval(() => {
+                updateCurrentDay();
+                console.log('Schedule updated at ' + new Date().toLocaleTimeString());
+            }, 60000);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             updateCurrentDay();
-            filterSchedule(); // Initialize filter
+            filterSchedule();
+            startScheduleRefresh();
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (scheduleRefreshInterval) {
+                clearInterval(scheduleRefreshInterval);
+            }
         });
     </script>
 </body>
