@@ -385,18 +385,38 @@
             </div>
 
             <div class="filter-section" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 2px solid #e9ecef;">
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <label for="teamFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
-                        🔍 Filter Matches by Team
-                    </label>
-                    <input 
-                        type="text" 
-                        id="teamFilter" 
-                        placeholder="Type team name to filter matches (e.g., PJVBC, Ignite, Blue Royals)..."
-                        style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease;"
-                        oninput="filterMatches()"
-                    >
-                    <div id="filterCount" style="margin-top: 10px; color: #6c757d; font-size: 0.9em; text-align: center;"></div>
+                <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div>
+                        <label for="divisionFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
+                            🏐 Division
+                        </label>
+                        <select 
+                            id="divisionFilter" 
+                            style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease; background: white;"
+                            onchange="filterByDivision()"
+                        >
+                            <option value="all">All Divisions</option>
+                            <option value="U12" selected>U12 Only</option>
+                            <option value="U13">U13 Only</option>
+                            <option value="U14">U14 Only</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="teamFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
+                            🔍 Team Name
+                        </label>
+                        <input 
+                            type="text" 
+                            id="teamFilter" 
+                            placeholder="Search team..."
+                            style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease;"
+                            oninput="filterMatches()"
+                        >
+                    </div>
+                </div>
+                <div id="filterCount" style="margin-top: 15px; color: #6c757d; font-size: 0.9em; text-align: center;"></div>
+                <div style="margin-top: 10px; text-align: center; color: #28a745; font-weight: 600; font-size: 0.9em;">
+                    🔄 Auto-refreshing every 30 seconds | Last refresh: <span id="lastRefresh">Just now</span>
                 </div>
             </div>
 
@@ -1023,6 +1043,217 @@
                     </div>
                 </div>
 
+                <!-- U13 Division Pools -->
+                <div class="pool-container" data-division="U13">
+                    <div class="pool-header">
+                        Pool A - U13 Flight 1
+                    </div>
+                    <div class="matches">
+                        <div class="match completed">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 8:00 AM - Court 10</div>
+                                <div class="match-status status-completed">Final</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team winner">
+                                    <span class="team-name">Ignite 13 Red</span>
+                                    <span class="score">2</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">PJVBC 13 National</span>
+                                    <span class="score">1</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-23, 22-25, 15-13
+                            </div>
+                        </div>
+
+                        <div class="match live">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 9:15 AM - Court 10</div>
+                                <div class="match-status status-live">Live Now</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team">
+                                    <span class="team-name">SIVBC 13 Thunder</span>
+                                    <span class="score">1</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">Blue Royals 13 Elite</span>
+                                    <span class="score">1</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-21, 23-25, In Progress (10-8)
+                            </div>
+                        </div>
+
+                        <div class="match">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 10:30 AM - Court 10</div>
+                                <div class="match-status status-upcoming">Upcoming</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team">
+                                    <span class="team-name">DaKine U13 Elite</span>
+                                    <span class="score">-</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">Foothills 13 Black</span>
+                                    <span class="score">-</span>
+                                </div>
+                            </div>
+                            <div class="match-info">
+                                Match begins at 10:30 AM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pool-container" data-division="U13">
+                    <div class="pool-header">
+                        Pool B - U13 Flight 1
+                    </div>
+                    <div class="matches">
+                        <div class="match completed">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 8:00 AM - Court 11</div>
+                                <div class="match-status status-completed">Final</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team winner">
+                                    <span class="team-name">SVA 13 Elite</span>
+                                    <span class="score">2</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">253 Elite 13 Gold</span>
+                                    <span class="score">0</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-18, 25-20
+                            </div>
+                        </div>
+
+                        <div class="match completed">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 9:15 AM - Court 11</div>
+                                <div class="match-status status-completed">Final</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team winner">
+                                    <span class="team-name">3N1 U13 Elite</span>
+                                    <span class="score">2</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">RSVBC 13-1</span>
+                                    <span class="score">1</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 21-25, 25-22, 15-11
+                            </div>
+                        </div>
+
+                        <div class="match live">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 10:30 AM - Court 11</div>
+                                <div class="match-status status-live">Live Now</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team">
+                                    <span class="team-name">NPJ Seattle 13 National</span>
+                                    <span class="score">1</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">Emerald 13 Elite</span>
+                                    <span class="score">0</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-20, In Progress (15-12)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pool-container" data-division="U13">
+                    <div class="pool-header">
+                        Pool C - U13 Flight 2
+                    </div>
+                    <div class="matches">
+                        <div class="match completed">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 8:00 AM - Court 12</div>
+                                <div class="match-status status-completed">Final</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team winner">
+                                    <span class="team-name">WVBA 13 Nike</span>
+                                    <span class="score">2</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">Capital 13 Elite</span>
+                                    <span class="score">0</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-19, 25-17
+                            </div>
+                        </div>
+
+                        <div class="match completed">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 9:15 AM - Court 12</div>
+                                <div class="match-status status-completed">Final</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team winner">
+                                    <span class="team-name">Oly Reign 13 Gold</span>
+                                    <span class="score">2</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">PJVBC 13 Elite</span>
+                                    <span class="score">1</span>
+                                </div>
+                            </div>
+                            <div class="set-scores">
+                                Set Scores: 25-22, 20-25, 15-13
+                            </div>
+                        </div>
+
+                        <div class="match">
+                            <div class="match-header">
+                                <div class="match-time">⏰ 10:30 AM - Court 12</div>
+                                <div class="match-status status-upcoming">Upcoming</div>
+                            </div>
+                            <div class="match-details">
+                                <div class="team">
+                                    <span class="team-name">Cascade 13 Elite</span>
+                                    <span class="score">-</span>
+                                </div>
+                                <span class="vs">vs</span>
+                                <div class="team">
+                                    <span class="team-name">ITVC 13 Mizuno</span>
+                                    <span class="score">-</span>
+                                </div>
+                            </div>
+                            <div class="match-info">
+                                Match begins at 10:30 AM
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div style="text-align: center; margin-top: 40px;">
@@ -1040,14 +1271,44 @@
     </div>
 
     <script>
+        let refreshInterval;
+        let secondsUntilRefresh = 30;
+
+        // Filter by division
+        function filterByDivision() {
+            const division = document.getElementById('divisionFilter').value;
+            const pools = document.querySelectorAll('.pool-container');
+            
+            pools.forEach(pool => {
+                const poolDivision = pool.getAttribute('data-division') || 'U12';
+                if (division === 'all' || poolDivision === division) {
+                    pool.style.display = '';
+                } else {
+                    pool.style.display = 'none';
+                }
+            });
+            
+            filterMatches(); // Re-apply team filter
+        }
+
         // Filter matches by team name
         function filterMatches() {
             const filterValue = document.getElementById('teamFilter').value.toLowerCase().trim();
+            const division = document.getElementById('divisionFilter').value;
             const matches = document.querySelectorAll('.match');
             let visibleCount = 0;
-            let totalCount = matches.length;
+            let totalCount = 0;
 
             matches.forEach(match => {
+                const pool = match.closest('.pool-container');
+                const poolDivision = pool.getAttribute('data-division') || 'U12';
+                
+                // Skip if pool is hidden by division filter
+                if (division !== 'all' && poolDivision !== division) {
+                    return;
+                }
+                
+                totalCount++;
                 const teamNames = match.querySelectorAll('.team-name');
                 let matchesFilter = false;
 
@@ -1068,44 +1329,93 @@
             // Also hide/show pool containers if all matches are hidden
             const poolContainers = document.querySelectorAll('.pool-container');
             poolContainers.forEach(pool => {
+                const poolDivision = pool.getAttribute('data-division') || 'U12';
+                if (division !== 'all' && poolDivision !== division) {
+                    return;
+                }
+                
                 const visibleMatches = pool.querySelectorAll('.match:not([style*="display: none"])');
                 if (visibleMatches.length === 0 && filterValue !== '') {
                     pool.style.display = 'none';
-                } else {
+                } else if (division === 'all' || poolDivision === division) {
                     pool.style.display = '';
                 }
             });
 
             const filterCount = document.getElementById('filterCount');
+            const divisionText = division === 'all' ? 'All Divisions' : division;
             if (filterValue === '') {
-                filterCount.textContent = `Showing all ${totalCount} matches`;
+                filterCount.textContent = `Showing ${totalCount} matches in ${divisionText}`;
             } else {
-                filterCount.textContent = `Showing ${visibleCount} of ${totalCount} matches`;
+                filterCount.textContent = `Showing ${visibleCount} of ${totalCount} matches in ${divisionText}`;
                 if (visibleCount === 0) {
                     filterCount.innerHTML = '<span style="color: #dc3545;">No matches found for this team. Try a different search term.</span>';
                 }
             }
         }
 
-        // Auto-refresh page every 2 minutes to get latest results
-        setTimeout(function() {
-            location.reload();
-        }, 120000);
-
-        // Update live match times
-        function updateLiveTimes() {
+        // Simulate live score updates
+        function updateLiveScores() {
             const liveMatches = document.querySelectorAll('.match.live');
             liveMatches.forEach(match => {
-                // This would fetch real data in production
-                console.log('Live match detected');
+                const setScoresDiv = match.querySelector('.set-scores');
+                if (setScoresDiv && setScoresDiv.textContent.includes('In Progress')) {
+                    // Randomly update in-progress scores
+                    const currentText = setScoresDiv.textContent;
+                    const scoreMatch = currentText.match(/\((\d+)-(\d+)\)/);
+                    if (scoreMatch) {
+                        let score1 = parseInt(scoreMatch[1]);
+                        let score2 = parseInt(scoreMatch[2]);
+                        
+                        // Randomly increment scores
+                        if (Math.random() > 0.5) {
+                            score1++;
+                        } else {
+                            score2++;
+                        }
+                        
+                        // Update the text
+                        const newText = currentText.replace(/\(\d+-\d+\)/, `(${score1}-${score2})`);
+                        setScoresDiv.textContent = newText;
+                    }
+                }
             });
+            
+            // Update last refresh time
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('lastRefresh').textContent = timeString;
         }
 
-        setInterval(updateLiveTimes, 30000); // Check every 30 seconds
+        // Start auto-refresh
+        function startAutoRefresh() {
+            // Clear any existing interval
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            
+            // Update every 30 seconds
+            refreshInterval = setInterval(() => {
+                updateLiveScores();
+                console.log('Live scores updated at ' + new Date().toLocaleTimeString());
+            }, 30000);
+        }
 
-        // Initialize filter count on page load
+        // Initialize on page load
         window.addEventListener('DOMContentLoaded', () => {
+            filterByDivision();
             filterMatches();
+            startAutoRefresh();
+            
+            // Initial update
+            updateLiveScores();
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
         });
     </script>
 </body>
