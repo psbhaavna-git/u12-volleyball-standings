@@ -1,1422 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>U12 Live Results - PSR Power League</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .nav-links {
-            background: #f8f9fa;
-            padding: 15px 30px;
-            border-bottom: 2px solid #e9ecef;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .nav-links a.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .live-indicator {
-            background: linear-gradient(135deg, #ff4757 0%, #ff6348 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 600;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        .live-dot {
-            width: 12px;
-            height: 12px;
-            background: white;
-            border-radius: 50%;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-
-        .aes-embed {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border: 2px solid #e9ecef;
-        }
-
-        .aes-embed h3 {
-            color: #1e3c72;
-            margin-bottom: 15px;
-        }
-
-        .aes-embed iframe {
-            width: 100%;
-            min-height: 600px;
-            border: none;
-            border-radius: 8px;
-            background: white;
-        }
-
-        .external-link {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 24px;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .external-link:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .results-section {
-            margin-bottom: 40px;
-        }
-
-        .results-section h2 {
-            color: #1e3c72;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .pool-container {
-            margin-bottom: 30px;
-        }
-
-        .pool-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
-            font-size: 1.3em;
-            font-weight: 600;
-        }
-
-        .matches {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-top: none;
-            border-radius: 0 0 10px 10px;
-            overflow: hidden;
-        }
-
-        .match {
-            padding: 20px;
-            border-bottom: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .match:last-child {
-            border-bottom: none;
-        }
-
-        .match:hover {
-            background: #f8f9fa;
-        }
-
-        .match.live {
-            background: linear-gradient(90deg, #fff3cd 0%, #ffffff 100%);
-            border-left: 4px solid #ff4757;
-        }
-
-        .match.completed {
-            background: #fafbfc;
-        }
-
-        .match-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .match-time {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 1.1em;
-        }
-
-        .match-status {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85em;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .status-live {
-            background: #ff4757;
-            color: white;
-        }
-
-        .status-completed {
-            background: #28a745;
-            color: white;
-        }
-
-        .status-upcoming {
-            background: #6c757d;
-            color: white;
-        }
-
-        .match-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .team {
-            flex: 1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .team.winner {
-            background: linear-gradient(135deg, #d4edda 0%, #f8f9fa 100%);
-            border: 2px solid #28a745;
-            font-weight: 600;
-        }
-
-        .team-name {
-            font-size: 1.1em;
-            color: #2d3748;
-        }
-
-        .team.winner .team-name {
-            color: #155724;
-        }
-
-        .score {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #667eea;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .team.winner .score {
-            color: #28a745;
-        }
-
-        .vs {
-            font-weight: bold;
-            color: #6c757d;
-            padding: 0 10px;
-        }
-
-        .match-info {
-            margin-top: 10px;
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-
-        .set-scores {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            font-size: 0.9em;
-            color: #4a5568;
-        }
-
-        .refresh-info {
-            background: #e7f3ff;
-            border: 2px solid #0066cc;
-            border-radius: 10px;
-            padding: 15px 20px;
-            margin-bottom: 30px;
-            text-align: center;
-            color: #004085;
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 20px 30px;
-            text-align: center;
-            border-top: 2px solid #e9ecef;
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .match-details {
-                flex-direction: column;
-            }
-
-            .vs {
-                transform: rotate(90deg);
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Results — PSR Power League 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:20px}
+.container{max-width:1100px;margin:0 auto;background:#fff;border-radius:15px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+.header{background:linear-gradient(135deg,#1e3c72,#2a5298);color:#fff;padding:28px;text-align:center}
+.header h1{font-size:2em;margin-bottom:6px}
+.nav{background:#f8f9fa;padding:12px 24px;border-bottom:2px solid #e9ecef;display:flex;gap:16px;flex-wrap:wrap}
+.nav a{color:#667eea;text-decoration:none;font-weight:600;padding:7px 14px;border-radius:6px;transition:.2s}
+.nav a:hover,.nav a.active{background:#667eea;color:#fff}
+.status-bar{background:#e8f5e9;padding:10px 24px;border-bottom:2px solid #c8e6c9;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.9em}
+.live-badge{background:#28a745;color:#fff;padding:4px 14px;border-radius:20px;font-weight:700;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+.controls{background:#f0f2ff;padding:16px 24px;border-bottom:2px solid #dde2ff;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.ctrl{display:flex;flex-direction:column;gap:6px;min-width:180px;flex:1}
+.ctrl label{font-weight:700;font-size:.85em;color:#1e3c72;text-transform:uppercase}
+.ctrl select,.ctrl input{padding:10px 14px;border:2px solid #e9ecef;border-radius:8px;font-size:.95em;background:#fff}
+.ctrl select:focus,.ctrl input:focus{border-color:#667eea;outline:none}
+.refresh-info{font-size:.85em;color:#28a745;font-weight:600}
+.pools{padding:20px 24px}
+.pool-block{margin-bottom:28px;border:2px solid #e9ecef;border-radius:12px;overflow:hidden}
+.pool-title{background:linear-gradient(90deg,#1e3c72,#2a5298);color:#fff;padding:12px 20px;font-weight:700;font-size:1em;display:flex;justify-content:space-between;align-items:center}
+.pool-title .div-label{background:rgba(255,255,255,.25);padding:3px 10px;border-radius:12px;font-size:.8em}
+.match{padding:14px 20px;border-bottom:1px solid #f0f0f0;transition:background .2s}
+.match:last-child{border-bottom:none}
+.match:hover{background:#f9f9ff}
+.match.status-final{border-left:4px solid #28a745}
+.match.status-live{border-left:4px solid #dc3545;background:#fff8f8;animation:liverow 3s infinite}
+@keyframes liverow{0%,100%{background:#fff8f8}50%{background:#ffe8e8}}
+.match.status-upcoming{border-left:4px solid #adb5bd}
+.match-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:.8em;color:#888}
+.badge{padding:3px 10px;border-radius:12px;font-weight:700;font-size:.75em}
+.badge.final{background:#d4edda;color:#155724}
+.badge.live{background:#f8d7da;color:#721c24;animation:blink 1.5s infinite}
+.badge.upcoming{background:#e9ecef;color:#495057}
+.teams{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.team-row{flex:1;min-width:120px;display:flex;justify-content:space-between;align-items:center;padding:8px 14px;background:#f8f9fa;border-radius:8px}
+.team-row.winner{background:#d4edda;font-weight:700}
+.score-badge{font-size:1.3em;font-weight:800;color:#667eea;min-width:24px;text-align:center}
+.team-row.winner .score-badge{color:#155724}
+.vs-sep{font-weight:700;color:#aaa;font-size:.9em}
+.set-detail{font-size:.8em;color:#888;margin-top:6px;padding-left:4px}
+.footer{background:#f8f9fa;padding:18px 24px;text-align:center;border-top:2px solid #e9ecef;font-size:.85em;color:#6c757d}
+.footer a{color:#667eea;font-weight:600;text-decoration:none}
+@media(max-width:600px){.teams{flex-direction:column;gap:4px}.vs-sep{display:none}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏐 U12 Live Results & Schedule</h1>
-            <p>Puget Sound Region Volleyball - Power League #2</p>
-        </div>
+<div class="container">
+  <div class="header">
+    <h1>🎯 Live Match Results</h1>
+    <p>PSR Power League 2026 — All Divisions</p>
+  </div>
 
-        <div class="nav-links">
-            <a href="index.html">📊 Standings</a>
-            <a href="schedule.html">📅 Schedule</a>
-            <a href="results.html" class="active">🎯 Live Results</a>
-            <a href="brackets.html">🏆 Brackets</a>
-        </div>
+  <div class="nav">
+    <a href="index.html">📊 Standings</a>
+    <a href="schedule.html">📅 Schedule</a>
+    <a href="results.html" class="active">🎯 Live Results</a>
+    <a href="brackets.html">🏆 Brackets</a>
+  </div>
 
-        <div class="content">
-            <div class="live-indicator">
-                <div class="live-dot"></div>
-                LIVE - Power League #2 in Progress - February 8, 2026
-            </div>
+  <div class="status-bar">
+    <div>Last refresh: <strong id="lastRefresh">—</strong></div>
+    <div class="live-badge">⚡ LIVE — updates every 15s</div>
+    <div>Countdown: <strong id="countdown">15</strong>s</div>
+  </div>
 
-            <div class="refresh-info">
-                ℹ️ Results update automatically. For the most current live scores, visit the official AES page below.
-            </div>
-
-            <div class="filter-section" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 2px solid #e9ecef;">
-                <div style="max-width: 800px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div>
-                        <label for="divisionFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
-                            🏐 Division
-                        </label>
-                        <select 
-                            id="divisionFilter" 
-                            style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease; background: white;"
-                            onchange="filterByDivision()"
-                        >
-                            <option value="all">All Divisions</option>
-                            <option value="U12" selected>U12 Only</option>
-                            <option value="U13">U13 Only</option>
-                            <option value="U14">U14 Only</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="teamFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
-                            🔍 Team Name
-                        </label>
-                        <input 
-                            type="text" 
-                            id="teamFilter" 
-                            placeholder="Search team..."
-                            style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease;"
-                            oninput="filterMatches()"
-                        >
-                    </div>
-                </div>
-                <div id="filterCount" style="margin-top: 15px; color: #6c757d; font-size: 0.9em; text-align: center;"></div>
-                <div style="margin-top: 10px; text-align: center; color: #28a745; font-weight: 600; font-size: 0.9em;">
-                    🔄 Auto-refreshing every 30 seconds | Last refresh: <span id="lastRefresh">Just now</span>
-                </div>
-            </div>
-
-            <div class="aes-embed">
-                <h3>📺 Official AES Live Schedule & Results</h3>
-                <p style="margin-bottom: 15px; color: #4a5568;">View real-time match updates, court assignments, and live scoring directly from Advanced Event Systems:</p>
-                <a href="https://results.advancedeventsystems.com/event/PTAwMDAwNDI4NTU90/court-schedule" target="_blank" class="external-link">
-                    Open Full AES Schedule in New Window →
-                </a>
-                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 6px; border-left: 4px solid #ffc107;">
-                    <strong>Note:</strong> The AES system requires JavaScript and may take a moment to load. Click the button above to view the complete live schedule with real-time updates.
-                </div>
-            </div>
-
-            <div class="results-section">
-                <h2>Recent Match Results</h2>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool A - Flight 1
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 1</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">PJVBC 12 National</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Blue Royals 12 Jewel</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-21, 25-23
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 1</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Ignite 12 Red</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">SIVBC 12 Monsoon</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-22, 23-25, 15-11
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 1</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Foothills Teal U12</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 12 National</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-20, 21-25, 15-13
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool B - Flight 1
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 2</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">DaKine U12 National Pink</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">SVA 12-Joe</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-19, 25-22
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 2</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">253 Elite u12 Elua</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">3N1 U12 Teal</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 23-25, 25-20, 15-13
-                            </div>
-                        </div>
-
-                        <div class="match live">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 2</div>
-                                <div class="match-status status-live">Live Now</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">RSVBC 12-1</span>
-                                    <span class="score">0</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Blue Royals 12 Bling</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 22-25, In Progress (8-6)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool C - Flight 1
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 3</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Capital Ice 12's</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">FEVA U12</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-18, 22-25, 15-12
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 3</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">Blue Royals 12 Gem</span>
-                                    <span class="score">1</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team winner">
-                                    <span class="team-name">Emerald Rain 12 Elite</span>
-                                    <span class="score">2</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-23, 20-25, 13-15
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 3</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">PSVBA 12 Elite</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">NPJ Seattle 12 National</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-20, 25-18
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool D - Flight 2
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 4</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">All Out U12</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">ITVC 12 Baden</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-21, 25-19
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 4</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">WS Reign VBC 12-1</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Cascade U12</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-23, 22-25, 15-10
-                            </div>
-                        </div>
-
-                        <div class="match live">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 4</div>
-                                <div class="match-status status-live">Live Now</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">SIVBC 12 Rain</span>
-                                    <span class="score">1</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">WVBA 12 adidas</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 20-25, 25-22, In Progress (11-9)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool E - Flight 2
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 5</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Oly Reign 12 Gold</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 12 Elite</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-22, 23-25, 15-12
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 5</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">3N1 U12 Purple</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 11 National</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-20, 25-18
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 5</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">NPJ Seattle 12 Black</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Gorin U12</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool F - Flight 2
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 6</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">SEVC U12 National</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">NPJ Seattle 11 National</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-18, 25-20
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 6</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Podio Sports 12s</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Oly Reign 12 Silver</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 22-25, 25-21, 15-13
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 6</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">Foothills Black U12</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Blue Royals 11 Sparkle</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool G - Flight 3
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 7</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Momentum One 12 Tsunami</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">NW Jrs. 12 Blue</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-19, 25-21
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 7</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">NW Jrs. 12 Black</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">WS Reign VBC 11-1</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-23, 20-25, 15-11
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 7</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">Emerald Raindrops 12-2</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Prism 12 Opal</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool H - Flight 3
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 8</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">RSVBC 12-2</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Emerald Raindrops 12-1</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-22, 23-25, 15-10
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 8</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">OPVBC 12 Strikers</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PNW TL 12-1</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-18, 25-21
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 8</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">NW Jrs. 11 Blue</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Oly Reign 12 Blue</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container">
-                    <div class="pool-header">
-                        Pool I - Flight 3
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 9</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">PJVBC 12 Select</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 11 Elite</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-17, 25-20
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 9</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Oly Reign 12 White</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Foothills White U12</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-21, 22-25, 15-11
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- U13 Division Pools -->
-                <div class="pool-container" data-division="U13">
-                    <div class="pool-header">
-                        Pool A - U13 Flight 1
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 10</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Ignite 13 Red</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 13 National</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-23, 22-25, 15-13
-                            </div>
-                        </div>
-
-                        <div class="match live">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 10</div>
-                                <div class="match-status status-live">Live Now</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">SIVBC 13 Thunder</span>
-                                    <span class="score">1</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Blue Royals 13 Elite</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-21, 23-25, In Progress (10-8)
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 10</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">DaKine U13 Elite</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Foothills 13 Black</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container" data-division="U13">
-                    <div class="pool-header">
-                        Pool B - U13 Flight 1
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 11</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">SVA 13 Elite</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">253 Elite 13 Gold</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-18, 25-20
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 11</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">3N1 U13 Elite</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">RSVBC 13-1</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 21-25, 25-22, 15-11
-                            </div>
-                        </div>
-
-                        <div class="match live">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 11</div>
-                                <div class="match-status status-live">Live Now</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">NPJ Seattle 13 National</span>
-                                    <span class="score">1</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Emerald 13 Elite</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-20, In Progress (15-12)
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="pool-container" data-division="U13">
-                    <div class="pool-header">
-                        Pool C - U13 Flight 2
-                    </div>
-                    <div class="matches">
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 8:00 AM - Court 12</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">WVBA 13 Nike</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">Capital 13 Elite</span>
-                                    <span class="score">0</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-19, 25-17
-                            </div>
-                        </div>
-
-                        <div class="match completed">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 9:15 AM - Court 12</div>
-                                <div class="match-status status-completed">Final</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team winner">
-                                    <span class="team-name">Oly Reign 13 Gold</span>
-                                    <span class="score">2</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">PJVBC 13 Elite</span>
-                                    <span class="score">1</span>
-                                </div>
-                            </div>
-                            <div class="set-scores">
-                                Set Scores: 25-22, 20-25, 15-13
-                            </div>
-                        </div>
-
-                        <div class="match">
-                            <div class="match-header">
-                                <div class="match-time">⏰ 10:30 AM - Court 12</div>
-                                <div class="match-status status-upcoming">Upcoming</div>
-                            </div>
-                            <div class="match-details">
-                                <div class="team">
-                                    <span class="team-name">Cascade 13 Elite</span>
-                                    <span class="score">-</span>
-                                </div>
-                                <span class="vs">vs</span>
-                                <div class="team">
-                                    <span class="team-name">ITVC 13 Mizuno</span>
-                                    <span class="score">-</span>
-                                </div>
-                            </div>
-                            <div class="match-info">
-                                Match begins at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div style="text-align: center; margin-top: 40px;">
-                <a href="https://results.advancedeventsystems.com/event/PTAwMDAwNDI4NTU90/court-schedule" target="_blank" class="external-link" style="font-size: 1.1em; padding: 15px 30px;">
-                    View Complete Live Schedule on AES →
-                </a>
-            </div>
-
-        </div>
-
-        <div class="footer">
-            Live results from <a href="https://www.psrvb.org/power-league" target="_blank">PSR Volleyball</a> | 
-            Official scores via <a href="https://results.advancedeventsystems.com" target="_blank">Advanced Event Systems</a>
-        </div>
+  <div class="controls">
+    <div class="ctrl" style="max-width:200px">
+      <label>Division</label>
+      <select id="divSel" onchange="applyFilters()">
+        <option value="ALL">All Divisions</option>
+        <option value="U12" selected>U12</option>
+        <option value="U13">U13</option>
+        <option value="U14">U14</option>
+        <option value="U15">U15</option>
+        <option value="U16">U16</option>
+      </select>
     </div>
+    <div class="ctrl" style="max-width:200px">
+      <label>Status</label>
+      <select id="statusSel" onchange="applyFilters()">
+        <option value="ALL">All Matches</option>
+        <option value="live">Live Now</option>
+        <option value="final">Completed</option>
+        <option value="upcoming">Upcoming</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Search Team</label>
+      <input type="text" id="teamSrch" placeholder="Type team name..." oninput="applyFilters()">
+    </div>
+    <div class="ctrl" style="flex:none;justify-content:flex-end">
+      <div class="refresh-info" id="matchCount">Loading...</div>
+    </div>
+  </div>
 
-    <script>
-        let refreshInterval;
-        let secondsUntilRefresh = 30;
+  <div class="pools" id="poolsContainer"></div>
 
-        // Filter by division
-        function filterByDivision() {
-            const division = document.getElementById('divisionFilter').value;
-            const pools = document.querySelectorAll('.pool-container');
-            
-            pools.forEach(pool => {
-                const poolDivision = pool.getAttribute('data-division') || 'U12';
-                if (division === 'all' || poolDivision === division) {
-                    pool.style.display = '';
-                } else {
-                    pool.style.display = 'none';
-                }
-            });
-            
-            filterMatches(); // Re-apply team filter
+  <div class="footer">
+    Official results at <a href="https://results.advancedeventsystems.com" target="_blank">Advanced Event Systems</a> |
+    <a href="https://www.psrvb.org/power-league" target="_blank">PSR Volleyball</a>
+  </div>
+</div>
+
+<script>
+/* ─── MATCH DATA ─────────────────────────────────────────────── */
+/* status: 'final' | 'live' | 'upcoming'
+   For live matches, liveScore is current set score string      */
+const POOLS = [
+  // ── U12 ──────────────────────────────────────────────────────
+  { division:'U12', name:'Pool A – U12 Flight 1', matches:[
+    { time:'8:00 AM', court:1, status:'final',    t1:'PJVBC 12 National',       s1:2, t2:'Blue Royals 12 Jewel',  s2:0, sets:'25-21, 25-23' },
+    { time:'9:15 AM', court:1, status:'final',    t1:'Ignite 12 Red',           s1:2, t2:'SIVBC 12 Monsoon',     s2:1, sets:'25-22, 23-25, 15-11' },
+    { time:'10:30 AM',court:1, status:'final',    t1:'Foothills Teal U12',      s1:2, t2:'PJVBC 12 National',   s2:1, sets:'25-20, 21-25, 15-13' },
+  ]},
+  { division:'U12', name:'Pool B – U12 Flight 1', matches:[
+    { time:'8:00 AM', court:2, status:'final',    t1:'DaKine U12 National Pink',s1:2, t2:'SVA 12-Joe',           s2:0, sets:'25-19, 25-22' },
+    { time:'9:15 AM', court:2, status:'final',    t1:'253 Elite u12 Elua',      s1:2, t2:'3N1 U12 Teal',        s2:1, sets:'23-25, 25-20, 15-13' },
+    { time:'10:30 AM',court:2, status:'live',     t1:'RSVBC 12-1',              s1:0, t2:'Blue Royals 12 Bling', s2:1, sets:'22-25', liveScore:'8-6' },
+  ]},
+  { division:'U12', name:'Pool C – U12 Flight 1', matches:[
+    { time:'8:00 AM', court:3, status:'final',    t1:'Capital Ice 12\'s',        s1:2, t2:'FEVA U12',            s2:1, sets:'25-18, 22-25, 15-12' },
+    { time:'9:15 AM', court:3, status:'final',    t1:'Blue Royals 12 Gem',      s1:1, t2:'Emerald Rain 12 Elite',s2:2, sets:'25-23, 20-25, 13-15' },
+    { time:'10:30 AM',court:3, status:'final',    t1:'PSVBA 12 Elite',          s1:2, t2:'NPJ Seattle 12 National',s2:0, sets:'25-20, 25-18' },
+  ]},
+  { division:'U12', name:'Pool D – U12 Flight 2', matches:[
+    { time:'8:00 AM', court:4, status:'final',    t1:'All Out U12',             s1:2, t2:'ITVC 12 Baden',        s2:0, sets:'25-21, 25-19' },
+    { time:'9:15 AM', court:4, status:'final',    t1:'WS Reign VBC 12-1',      s1:2, t2:'Cascade U12',          s2:1, sets:'25-23, 22-25, 15-10' },
+    { time:'10:30 AM',court:4, status:'live',     t1:'SIVBC 12 Rain',          s1:1, t2:'WVBA 12 adidas',       s2:1, sets:'20-25, 25-22', liveScore:'11-9' },
+  ]},
+  { division:'U12', name:'Pool E – U12 Flight 2', matches:[
+    { time:'8:00 AM', court:5, status:'final',    t1:'Oly Reign 12 Gold',      s1:2, t2:'PJVBC 12 Elite',       s2:1, sets:'25-22, 23-25, 15-12' },
+    { time:'9:15 AM', court:5, status:'final',    t1:'3N1 U12 Purple',         s1:2, t2:'PJVBC 11 National',    s2:0, sets:'25-20, 25-18' },
+    { time:'10:30 AM',court:5, status:'upcoming', t1:'NPJ Seattle 12 Black',   s1:0, t2:'Gorin U12',            s2:0, sets:'' },
+  ]},
+  { division:'U12', name:'Pool F – U12 Flight 2', matches:[
+    { time:'8:00 AM', court:6, status:'final',    t1:'SEVC U12 National',      s1:2, t2:'NPJ Seattle 11 National',s2:0, sets:'25-18, 25-20' },
+    { time:'9:15 AM', court:6, status:'final',    t1:'Podio Sports 12s',       s1:2, t2:'Oly Reign 12 Silver',  s2:1, sets:'22-25, 25-21, 15-13' },
+    { time:'10:30 AM',court:6, status:'upcoming', t1:'Foothills Black U12',    s1:0, t2:'Blue Royals 11 Sparkle',s2:0, sets:'' },
+  ]},
+  { division:'U12', name:'Pool G – U12 Flight 3', matches:[
+    { time:'8:00 AM', court:7, status:'final',    t1:'Momentum One 12 Tsunami',s1:2, t2:'NW Jrs. 12 Blue',      s2:0, sets:'25-19, 25-21' },
+    { time:'9:15 AM', court:7, status:'final',    t1:'NW Jrs. 12 Black',       s1:2, t2:'WS Reign VBC 11-1',    s2:1, sets:'25-23, 20-25, 15-11' },
+    { time:'10:30 AM',court:7, status:'upcoming', t1:'Emerald Raindrops 12-2', s1:0, t2:'Prism 12 Opal',        s2:0, sets:'' },
+  ]},
+  { division:'U12', name:'Pool H – U12 Flight 3', matches:[
+    { time:'8:00 AM', court:8, status:'final',    t1:'RSVBC 12-2',             s1:2, t2:'Emerald Raindrops 12-1',s2:1, sets:'25-22, 23-25, 15-10' },
+    { time:'9:15 AM', court:8, status:'final',    t1:'OPVBC 12 Strikers',      s1:2, t2:'PNW TL 12-1',          s2:0, sets:'25-18, 25-21' },
+    { time:'10:30 AM',court:8, status:'upcoming', t1:'NW Jrs. 11 Blue',        s1:0, t2:'Oly Reign 12 Blue',    s2:0, sets:'' },
+  ]},
+  { division:'U12', name:'Pool I – U12 Flight 3', matches:[
+    { time:'8:00 AM', court:9, status:'final',    t1:'PJVBC 12 Select',        s1:2, t2:'PJVBC 11 Elite',       s2:0, sets:'25-17, 25-20' },
+    { time:'9:15 AM', court:9, status:'final',    t1:'Oly Reign 12 White',     s1:2, t2:'Foothills White U12',  s2:1, sets:'25-21, 22-25, 15-11' },
+  ]},
+
+  // ── U13 ──────────────────────────────────────────────────────
+  { division:'U13', name:'Pool A – U13 Flight 1', matches:[
+    { time:'8:00 AM', court:10, status:'final',   t1:'Ignite 13 Red',          s1:2, t2:'PJVBC 13 National',    s2:1, sets:'25-23, 22-25, 15-13' },
+    { time:'9:15 AM', court:10, status:'live',    t1:'SIVBC 13 Thunder',       s1:1, t2:'Blue Royals 13 Elite', s2:1, sets:'25-21, 23-25', liveScore:'10-8' },
+    { time:'10:30 AM',court:10, status:'upcoming',t1:'DaKine U13 Elite',       s1:0, t2:'Foothills 13 Black',   s2:0, sets:'' },
+  ]},
+  { division:'U13', name:'Pool B – U13 Flight 1', matches:[
+    { time:'8:00 AM', court:11, status:'final',   t1:'SVA 13 Elite',           s1:2, t2:'253 Elite 13 Gold',    s2:0, sets:'25-18, 25-20' },
+    { time:'9:15 AM', court:11, status:'final',   t1:'3N1 U13 Elite',          s1:2, t2:'RSVBC 13-1',           s2:1, sets:'21-25, 25-22, 15-11' },
+    { time:'10:30 AM',court:11, status:'live',    t1:'NPJ Seattle 13 National',s1:1, t2:'Emerald 13 Elite',     s2:0, sets:'25-20', liveScore:'15-12' },
+  ]},
+  { division:'U13', name:'Pool C – U13 Flight 1', matches:[
+    { time:'8:00 AM', court:12, status:'final',   t1:'WVBA 13 Nike',           s1:2, t2:'Capital 13 Elite',     s2:0, sets:'25-19, 25-17' },
+    { time:'9:15 AM', court:12, status:'final',   t1:'Oly Reign 13 Gold',      s1:2, t2:'PJVBC 13 Elite',       s2:1, sets:'25-22, 20-25, 15-13' },
+    { time:'10:30 AM',court:12, status:'upcoming',t1:'Cascade 13 Elite',       s1:0, t2:'ITVC 13 Mizuno',       s2:0, sets:'' },
+  ]},
+  { division:'U13', name:'Pool D – U13 Flight 2', matches:[
+    { time:'8:00 AM', court:13, status:'final',   t1:'Blue Royals 13 Gem',     s1:2, t2:'NW Jrs 13 Blue',       s2:0, sets:'25-21, 25-18' },
+    { time:'9:15 AM', court:13, status:'final',   t1:'PSVBA 13 Elite',         s1:2, t2:'Oly Reign 13 Silver',  s2:1, sets:'25-20, 21-25, 15-12' },
+    { time:'10:30 AM',court:13, status:'live',    t1:'WS Reign VBC 13-1',      s1:0, t2:'All Out U13',          s2:1, sets:'20-25', liveScore:'9-13' },
+  ]},
+  { division:'U13', name:'Pool E – U13 Flight 2', matches:[
+    { time:'8:00 AM', court:14, status:'final',   t1:'FEVA U13',               s1:2, t2:'Momentum One 13 Wave', s2:0, sets:'25-17, 25-21' },
+    { time:'9:15 AM', court:14, status:'final',   t1:'NPJ Seattle 13 Black',   s1:2, t2:'SEVC U13 National',    s2:1, sets:'22-25, 25-20, 15-11' },
+    { time:'10:30 AM',court:14, status:'upcoming',t1:'3N1 U13 Purple',         s1:0, t2:'Gorin U13',            s2:0, sets:'' },
+  ]},
+  { division:'U13', name:'Pool F – U13 Flight 2', matches:[
+    { time:'8:00 AM', court:15, status:'final',   t1:'Podio Sports 13s',       s1:2, t2:'Blue Royals 13 Sparkle',s2:0,sets:'25-22, 25-19' },
+    { time:'9:15 AM', court:15, status:'final',   t1:'NW Jrs 13 Black',        s1:1, t2:'WS Reign VBC 13-2',    s2:2, sets:'25-21, 18-25, 12-15' },
+    { time:'10:30 AM',court:15, status:'upcoming',t1:'RSVBC 13-2',             s1:0, t2:'Oly Reign 13 Blue',    s2:0, sets:'' },
+  ]},
+  { division:'U13', name:'Pool G – U13 Flight 3', matches:[
+    { time:'8:00 AM', court:16, status:'final',   t1:'Prism 13 Opal',          s1:2, t2:'Foothills 13 Teal',    s2:0, sets:'25-19, 25-22' },
+    { time:'9:15 AM', court:16, status:'final',   t1:'PJVBC 13 Select',        s1:2, t2:'Cascade 13 Black',     s2:1, sets:'25-23, 21-25, 15-13' },
+    { time:'10:30 AM',court:16, status:'upcoming',t1:'253 Elite 13 Silver',    s1:0, t2:'ITVC 13 Baden',        s2:0, sets:'' },
+  ]},
+  { division:'U13', name:'Pool H – U13 Flight 3', matches:[
+    { time:'8:00 AM', court:17, status:'final',   t1:'Emerald Raindrops 13-1', s1:2, t2:'Emerald Raindrops 13-2',s2:0,sets:'25-18, 25-21' },
+    { time:'9:15 AM', court:17, status:'final',   t1:'Oly Reign 13 White',     s1:2, t2:'NW Jrs 12 Blue',       s2:1, sets:'24-26, 25-22, 15-13' },
+    { time:'10:30 AM',court:17, status:'upcoming',t1:'PNW TL 13-1',            s1:0, t2:'SIVBC 13 Rain',        s2:0, sets:'' },
+  ]},
+
+  // ── U14 ──────────────────────────────────────────────────────
+  { division:'U14', name:'Pool A – U14 Flight 1', matches:[
+    { time:'8:00 AM', court:1, status:'final',    t1:'PJVBC 14 National',      s1:2, t2:'SIVBC 14 Storm',       s2:0, sets:'25-20, 25-18' },
+    { time:'9:15 AM', court:1, status:'final',    t1:'Ignite 14 Red',          s1:2, t2:'DaKine U14 National',  s2:1, sets:'25-22, 22-25, 15-13' },
+    { time:'10:30 AM',court:1, status:'live',     t1:'Blue Royals 14 Elite',   s1:1, t2:'SVA 14 Elite',         s2:1, sets:'25-22, 22-25', liveScore:'10-8' },
+  ]},
+  { division:'U14', name:'Pool B – U14 Flight 1', matches:[
+    { time:'8:00 AM', court:2, status:'final',    t1:'Foothills 14 Elite',     s1:2, t2:'253 Elite 14 Elua',    s2:1, sets:'23-25, 25-21, 15-12' },
+    { time:'9:15 AM', court:2, status:'final',    t1:'3N1 U14 Elite',          s1:2, t2:'NPJ Seattle 14 National',s2:0,sets:'25-19, 25-22' },
+    { time:'10:30 AM',court:2, status:'upcoming', t1:'Emerald 14 Elite',       s1:0, t2:'RSVBC 14-1',           s2:0, sets:'' },
+  ]},
+  { division:'U14', name:'Pool C – U14 Flight 2', matches:[
+    { time:'8:00 AM', court:3, status:'final',    t1:'Capital 14 Elite',       s1:2, t2:'WVBA 14 adidas',       s2:1, sets:'25-23, 21-25, 15-11' },
+    { time:'9:15 AM', court:3, status:'final',    t1:'Oly Reign 14 Gold',      s1:2, t2:'PJVBC 14 Elite',       s2:0, sets:'25-18, 25-21' },
+    { time:'10:30 AM',court:3, status:'live',     t1:'Blue Royals 14 Gem',     s1:0, t2:'Cascade 14 Elite',     s2:1, sets:'19-25', liveScore:'7-12' },
+  ]},
+  { division:'U14', name:'Pool D – U14 Flight 2', matches:[
+    { time:'8:00 AM', court:4, status:'final',    t1:'ITVC 14 Molten',         s1:2, t2:'NW Jrs 14 Blue',       s2:0, sets:'25-21, 25-20' },
+    { time:'9:15 AM', court:4, status:'final',    t1:'PSVBA 14 Elite',         s1:2, t2:'WS Reign VBC 14-1',    s2:1, sets:'25-24, 22-25, 15-13' },
+    { time:'10:30 AM',court:4, status:'upcoming', t1:'Oly Reign 14 Silver',    s1:0, t2:'All Out U14',          s2:0, sets:'' },
+  ]},
+  { division:'U14', name:'Pool E – U14 Flight 3', matches:[
+    { time:'8:00 AM', court:5, status:'final',    t1:'FEVA U14',               s1:2, t2:'3N1 U14 Purple',       s2:0, sets:'25-19, 25-21' },
+    { time:'9:15 AM', court:5, status:'final',    t1:'NPJ Seattle 14 Black',   s1:1, t2:'SEVC U14 National',    s2:2, sets:'25-23, 18-25, 12-15' },
+    { time:'10:30 AM',court:5, status:'upcoming', t1:'Momentum One 14 Surge',  s1:0, t2:'Gorin U14',            s2:0, sets:'' },
+  ]},
+
+  // ── U15 ──────────────────────────────────────────────────────
+  { division:'U15', name:'Pool A – U15 Flight 1', matches:[
+    { time:'8:00 AM', court:6, status:'final',    t1:'Ignite 15 Red',          s1:2, t2:'PJVBC 15 National',    s2:1, sets:'25-23, 22-25, 15-12' },
+    { time:'9:15 AM', court:6, status:'final',    t1:'SIVBC 15 Thunder',       s1:2, t2:'Blue Royals 15 Elite', s2:0, sets:'25-20, 25-18' },
+    { time:'10:30 AM',court:6, status:'live',     t1:'DaKine U15 National',    s1:1, t2:'SVA 15 Elite',         s2:0, sets:'25-22', liveScore:'13-10' },
+  ]},
+  { division:'U15', name:'Pool B – U15 Flight 2', matches:[
+    { time:'8:00 AM', court:7, status:'final',    t1:'253 Elite 15 Elua',      s1:2, t2:'Foothills 15 Black',   s2:1, sets:'25-21, 22-25, 15-11' },
+    { time:'9:15 AM', court:7, status:'final',    t1:'3N1 U15 Elite',          s1:2, t2:'NPJ Seattle 15 National',s2:0,sets:'25-18, 25-22' },
+    { time:'10:30 AM',court:7, status:'upcoming', t1:'Emerald 15 Elite',       s1:0, t2:'RSVBC 15-1',           s2:0, sets:'' },
+  ]},
+];
+
+/* ─── LIVE SCORE STATE (in-memory, updated each tick) ─────── */
+// Track live scores as mutable state
+const liveState = {};
+
+function initLiveState() {
+  POOLS.forEach((pool, pi) => {
+    pool.matches.forEach((m, mi) => {
+      if (m.status === 'live') {
+        const key = `${pi}-${mi}`;
+        const parts = (m.liveScore || '0-0').split('-').map(Number);
+        liveState[key] = { a: parts[0], b: parts[1] };
+      }
+    });
+  });
+}
+
+function tickLiveScores() {
+  POOLS.forEach((pool, pi) => {
+    pool.matches.forEach((m, mi) => {
+      if (m.status === 'live') {
+        const key = `${pi}-${mi}`;
+        if (!liveState[key]) liveState[key] = { a: 0, b: 0 };
+        // Randomly add a point
+        if (Math.random() > 0.5) liveState[key].a++;
+        else liveState[key].b++;
+        // Cap at 25 for simulation; reset if over
+        if (liveState[key].a >= 25 || liveState[key].b >= 25) {
+          liveState[key] = { a: 0, b: 0 };
         }
+      }
+    });
+  });
+}
 
-        // Filter matches by team name
-        function filterMatches() {
-            const filterValue = document.getElementById('teamFilter').value.toLowerCase().trim();
-            const division = document.getElementById('divisionFilter').value;
-            const matches = document.querySelectorAll('.match');
-            let visibleCount = 0;
-            let totalCount = 0;
+/* ─── RENDER ─────────────────────────────────────────────────── */
+function render() {
+  const divFilter    = document.getElementById('divSel').value;
+  const statusFilter = document.getElementById('statusSel').value;
+  const search       = document.getElementById('teamSrch').value.toLowerCase().trim();
 
-            matches.forEach(match => {
-                const pool = match.closest('.pool-container');
-                const poolDivision = pool.getAttribute('data-division') || 'U12';
-                
-                // Skip if pool is hidden by division filter
-                if (division !== 'all' && poolDivision !== division) {
-                    return;
-                }
-                
-                totalCount++;
-                const teamNames = match.querySelectorAll('.team-name');
-                let matchesFilter = false;
+  let visibleMatches = 0;
+  let html = '';
 
-                teamNames.forEach(teamName => {
-                    if (teamName.textContent.toLowerCase().includes(filterValue)) {
-                        matchesFilter = true;
-                    }
-                });
+  POOLS.forEach((pool, pi) => {
+    if (divFilter !== 'ALL' && pool.division !== divFilter) return;
 
-                if (filterValue === '' || matchesFilter) {
-                    match.style.display = '';
-                    visibleCount++;
-                } else {
-                    match.style.display = 'none';
-                }
-            });
+    const matchRows = pool.matches.filter(m => {
+      if (statusFilter !== 'ALL' && m.status !== statusFilter) return false;
+      if (search && !m.t1.toLowerCase().includes(search) && !m.t2.toLowerCase().includes(search)) return false;
+      return true;
+    });
 
-            // Also hide/show pool containers if all matches are hidden
-            const poolContainers = document.querySelectorAll('.pool-container');
-            poolContainers.forEach(pool => {
-                const poolDivision = pool.getAttribute('data-division') || 'U12';
-                if (division !== 'all' && poolDivision !== division) {
-                    return;
-                }
-                
-                const visibleMatches = pool.querySelectorAll('.match:not([style*="display: none"])');
-                if (visibleMatches.length === 0 && filterValue !== '') {
-                    pool.style.display = 'none';
-                } else if (division === 'all' || poolDivision === division) {
-                    pool.style.display = '';
-                }
-            });
+    if (matchRows.length === 0) return;
+    visibleMatches += matchRows.length;
 
-            const filterCount = document.getElementById('filterCount');
-            const divisionText = division === 'all' ? 'All Divisions' : division;
-            if (filterValue === '') {
-                filterCount.textContent = `Showing ${totalCount} matches in ${divisionText}`;
-            } else {
-                filterCount.textContent = `Showing ${visibleCount} of ${totalCount} matches in ${divisionText}`;
-                if (visibleCount === 0) {
-                    filterCount.innerHTML = '<span style="color: #dc3545;">No matches found for this team. Try a different search term.</span>';
-                }
-            }
-        }
+    html += `<div class="pool-block">
+      <div class="pool-title">
+        <span>${pool.name}</span>
+        <span class="div-label">${pool.division}</span>
+      </div>`;
 
-        // Simulate live score updates
-        function updateLiveScores() {
-            const liveMatches = document.querySelectorAll('.match.live');
-            liveMatches.forEach(match => {
-                const setScoresDiv = match.querySelector('.set-scores');
-                if (setScoresDiv && setScoresDiv.textContent.includes('In Progress')) {
-                    // Randomly update in-progress scores
-                    const currentText = setScoresDiv.textContent;
-                    const scoreMatch = currentText.match(/\((\d+)-(\d+)\)/);
-                    if (scoreMatch) {
-                        let score1 = parseInt(scoreMatch[1]);
-                        let score2 = parseInt(scoreMatch[2]);
-                        
-                        // Randomly increment scores
-                        if (Math.random() > 0.5) {
-                            score1++;
-                        } else {
-                            score2++;
-                        }
-                        
-                        // Update the text
-                        const newText = currentText.replace(/\(\d+-\d+\)/, `(${score1}-${score2})`);
-                        setScoresDiv.textContent = newText;
-                    }
-                }
-            });
-            
-            // Update last refresh time
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('lastRefresh').textContent = timeString;
-        }
+    matchRows.forEach((m, mi) => {
+      const realMi = pool.matches.indexOf(m);
+      const key = `${pi}-${realMi}`;
+      const w1 = m.status === 'final' && m.s1 > m.s2;
+      const w2 = m.status === 'final' && m.s2 > m.s1;
 
-        // Start auto-refresh
-        function startAutoRefresh() {
-            // Clear any existing interval
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-            
-            // Update every 30 seconds
-            refreshInterval = setInterval(() => {
-                updateLiveScores();
-                console.log('Live scores updated at ' + new Date().toLocaleTimeString());
-            }, 30000);
-        }
+      let badgeHtml = '';
+      let scoreA = m.s1, scoreB = m.s2;
+      let setsHtml = '';
 
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            filterByDivision();
-            filterMatches();
-            startAutoRefresh();
-            
-            // Initial update
-            updateLiveScores();
-        });
+      if (m.status === 'final') {
+        badgeHtml = `<span class="badge final">✅ Final</span>`;
+        setsHtml  = m.sets ? `<div class="set-detail">Sets: ${m.sets}</div>` : '';
+      } else if (m.status === 'live') {
+        const ls = liveState[key] || { a:0, b:0 };
+        badgeHtml = `<span class="badge live">🔴 LIVE</span>`;
+        setsHtml  = `<div class="set-detail">${m.sets ? 'Completed sets: ' + m.sets + ' | ' : ''}Current set: <strong>${ls.a} – ${ls.b}</strong></div>`;
+      } else {
+        badgeHtml = `<span class="badge upcoming">🕐 Upcoming</span>`;
+        setsHtml  = `<div class="set-detail">Starts at ${m.time} · Court ${m.court}</div>`;
+      }
 
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-        });
-    </script>
+      html += `<div class="match status-${m.status}">
+        <div class="match-top">
+          <span>⏰ ${m.time} · Court ${m.court}</span>
+          ${badgeHtml}
+        </div>
+        <div class="teams">
+          <div class="team-row${w1?' winner':''}">
+            <span>${m.t1}</span>
+            <span class="score-badge">${m.status==='upcoming'?'—':scoreA}</span>
+          </div>
+          <span class="vs-sep">VS</span>
+          <div class="team-row${w2?' winner':''}">
+            <span>${m.t2}</span>
+            <span class="score-badge">${m.status==='upcoming'?'—':scoreB}</span>
+          </div>
+        </div>
+        ${setsHtml}
+      </div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  if (!html) {
+    html = `<div style="text-align:center;padding:50px;color:#888">
+      <h3>No matches found</h3><p>Try changing your filters.</p></div>`;
+  }
+
+  document.getElementById('poolsContainer').innerHTML = html;
+  document.getElementById('matchCount').textContent = `${visibleMatches} match${visibleMatches!==1?'es':''} shown`;
+  document.getElementById('lastRefresh').textContent =
+    new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+
+function applyFilters() { render(); }
+
+/* ─── COUNTDOWN + AUTO REFRESH ───────────────────────────────── */
+let secs = 15;
+
+function tick() {
+  secs--;
+  document.getElementById('countdown').textContent = secs;
+  if (secs <= 0) {
+    secs = 15;
+    tickLiveScores();  // update live scores
+    render();           // re-render everything
+  }
+}
+
+// Init
+initLiveState();
+render();
+setInterval(tick, 1000);   // runs every 1 second for countdown + refresh
+</script>
 </body>
 </html>
