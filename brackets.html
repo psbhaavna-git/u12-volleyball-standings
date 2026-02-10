@@ -1,1694 +1,718 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>U12 Tournament Brackets - PSR Power League</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brackets — PSR Power League 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;padding:20px}
+.container{max-width:1200px;margin:0 auto;background:#fff;border-radius:15px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+.header{background:linear-gradient(135deg,#1e3c72,#2a5298);color:#fff;padding:28px;text-align:center}
+.header h1{font-size:2em;margin-bottom:6px}
+.nav{background:#f8f9fa;padding:12px 24px;border-bottom:2px solid #e9ecef;display:flex;gap:16px;flex-wrap:wrap}
+.nav a{color:#667eea;text-decoration:none;font-weight:600;padding:7px 14px;border-radius:6px;transition:.2s}
+.nav a:hover,.nav a.active{background:#667eea;color:#fff}
+.status-bar{background:#e8f5e9;padding:10px 24px;border-bottom:2px solid #c8e6c9;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:.9em}
+.live-badge{background:#28a745;color:#fff;padding:4px 14px;border-radius:20px;font-weight:700;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.6}}
+.tabs-row{padding:16px 24px;background:#f8f9fa;border-bottom:2px solid #e9ecef;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tab-btn{padding:9px 20px;border-radius:8px;border:2px solid #e9ecef;background:#fff;font-weight:600;cursor:pointer;color:#6c757d;transition:.2s;font-size:.9em}
+.tab-btn:hover{border-color:#667eea;color:#667eea}
+.tab-btn.active{background:#667eea;color:#fff;border-color:#667eea}
+.sep{color:#ccc;font-weight:300;font-size:1.2em}
+.search-wrap{margin-left:auto}
+.search-wrap input{padding:9px 14px;border:2px solid #e9ecef;border-radius:8px;font-size:.9em;min-width:220px}
+.search-wrap input:focus{border-color:#667eea;outline:none}
+.content{padding:24px}
+.section-title{font-size:1.3em;font-weight:700;color:#1e3c72;margin-bottom:20px;padding-bottom:8px;border-bottom:3px solid #667eea}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+/* Pool standings grid */
+.pools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
+.pool-card{border:2px solid #e9ecef;border-radius:10px;overflow:hidden}
+.pool-card-hdr{background:linear-gradient(90deg,#1e3c72,#2a5298);color:#fff;padding:10px 16px;font-weight:700;font-size:.9em}
+.pool-row{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;border-bottom:1px solid #f0f0f0;font-size:.9em}
+.pool-row:last-child{border:none}
+.pool-row.highlight{background:#fff3cd;font-weight:700}
+.pos{background:#667eea;color:#fff;border-radius:50%;width:22px;height:22px;display:inline-flex;align-items:center;justify-content:center;font-size:.75em;font-weight:700;margin-right:8px;flex-shrink:0}
+.pos.p1{background:#FFD700;color:#333}
+.pos.p2{background:#9e9e9e}
+.pos.p3{background:#CD7F32}
+.record{color:#888;font-size:.85em}
 
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        .nav-links {
-            background: #f8f9fa;
-            padding: 15px 30px;
-            border-bottom: 2px solid #e9ecef;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .nav-links a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .nav-links a.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .bracket-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .bracket-selector button {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid #667eea;
-            color: #667eea;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1em;
-        }
-
-        .bracket-selector button:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        .bracket-selector button.active {
-            background: #667eea;
-            color: white;
-        }
-
-        .bracket-info {
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            border-left: 4px solid #667eea;
-        }
-
-        .bracket-info h3 {
-            color: #1e3c72;
-            margin-bottom: 10px;
-        }
-
-        .bracket-section {
-            margin-bottom: 40px;
-        }
-
-        .bracket-title {
-            color: #1e3c72;
-            font-size: 1.8em;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-            text-align: center;
-        }
-
-        .bracket-container {
-            overflow-x: auto;
-            padding: 20px 0;
-        }
-
-        .bracket {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            min-width: 1200px;
-            padding: 20px;
-        }
-
-        .round {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            min-width: 250px;
-        }
-
-        .round-title {
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.2em;
-            color: #667eea;
-            margin-bottom: 20px;
-            padding: 10px;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
-            border-radius: 8px;
-        }
-
-        .match-bracket {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            margin: 20px 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .match-bracket:hover {
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            transform: translateY(-3px);
-        }
-
-        .match-bracket.completed {
-            border-color: #28a745;
-        }
-
-        .match-bracket.upcoming {
-            border-color: #667eea;
-            opacity: 0.8;
-        }
-
-        .bracket-team {
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-            background: #fafbfc;
-        }
-
-        .bracket-team:first-child {
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .bracket-team.winner {
-            background: linear-gradient(90deg, #d4edda 0%, #f8f9fa 100%);
-            font-weight: 700;
-            color: #155724;
-        }
-
-        .bracket-team.loser {
-            opacity: 0.6;
-        }
-
-        .team-name-bracket {
-            font-size: 1.05em;
-        }
-
-        .team-seed {
-            display: inline-block;
-            width: 25px;
-            height: 25px;
-            background: #667eea;
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 25px;
-            font-size: 0.85em;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .bracket-team.winner .team-seed {
-            background: #28a745;
-        }
-
-        .bracket-score {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #667eea;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .bracket-team.winner .bracket-score {
-            color: #28a745;
-        }
-
-        .match-time-bracket {
-            text-align: center;
-            padding: 8px;
-            background: #f8f9fa;
-            font-size: 0.85em;
-            color: #6c757d;
-            border-top: 1px solid #e9ecef;
-        }
-
-        .match-time-bracket.live {
-            background: #fff3cd;
-            color: #856404;
-            font-weight: 600;
-        }
-
-        .champion-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #FFD700;
-            color: #000;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: bold;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .tbd {
-            color: #6c757d;
-            font-style: italic;
-        }
-
-        .connector {
-            position: relative;
-            height: 2px;
-            background: #e9ecef;
-            margin: 30px 0;
-        }
-
-        .pool-standings {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .pool-card {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .pool-card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px;
-            font-weight: 600;
-            font-size: 1.1em;
-        }
-
-        .pool-team {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .pool-team:last-child {
-            border-bottom: none;
-        }
-
-        .pool-team:nth-child(2) {
-            background: linear-gradient(90deg, #fff9e6 0%, #ffffff 100%);
-        }
-
-        .pool-team:nth-child(3) {
-            background: #fafbfc;
-        }
-
-        .pool-position {
-            font-weight: bold;
-            color: #667eea;
-            margin-right: 10px;
-        }
-
-        .highlight-team {
-            background: linear-gradient(90deg, #fff3cd 0%, #ffffff 100%) !important;
-            border: 2px solid #ffc107 !important;
-            animation: highlight-pulse 1.5s ease-in-out infinite;
-        }
-
-        @keyframes highlight-pulse {
-            0%, 100% { 
-                box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7);
-            }
-            50% { 
-                box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
-            }
-        }
-
-        .footer {
-            background: #f8f9fa;
-            padding: 20px 30px;
-            text-align: center;
-            border-top: 2px solid #e9ecef;
-            color: #6c757d;
-            font-size: 0.9em;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 1.8em;
-            }
-
-            .content {
-                padding: 15px;
-            }
-
-            .bracket {
-                gap: 20px;
-                min-width: 800px;
-            }
-
-            .round {
-                min-width: 200px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-    </style>
+/* Bracket */
+.bracket-wrap{overflow-x:auto;padding-bottom:16px}
+.bracket{display:flex;gap:0;min-width:700px}
+.round{display:flex;flex-direction:column;justify-content:space-around;min-width:200px;padding:0 8px}
+.round-title{text-align:center;font-weight:700;font-size:.8em;text-transform:uppercase;color:#667eea;letter-spacing:.5px;padding:8px 0 16px;border-bottom:2px solid #667eea;margin-bottom:16px}
+.bm{border:2px solid #e9ecef;border-radius:8px;overflow:hidden;margin:8px 0;background:#fff;transition:.2s}
+.bm:hover{box-shadow:0 4px 12px rgba(102,126,234,.2)}
+.bm.live-match{border-color:#dc3545;box-shadow:0 0 0 3px rgba(220,53,69,.15);animation:liveglow 2s infinite}
+@keyframes liveglow{0%,100%{box-shadow:0 0 0 3px rgba(220,53,69,.15)}50%{box-shadow:0 0 0 6px rgba(220,53,69,.25)}}
+.bm-team{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid #f0f0f0;font-size:.88em}
+.bm-team:last-child{border:none}
+.bm-team.win{background:#d4edda;font-weight:700}
+.bm-team.tbd{color:#aaa;font-style:italic}
+.bm-score{font-weight:800;color:#667eea;font-size:1.1em;min-width:20px;text-align:right}
+.bm-team.win .bm-score{color:#155724}
+.bm-status{text-align:center;font-size:.72em;padding:4px;background:#f8f9fa;color:#888}
+.bm-status.live{background:#f8d7da;color:#721c24;font-weight:700;animation:blink 1.5s infinite}
+.highlight-match{background:#fff9c4 !important}
+.champ-badge{text-align:center;font-size:1.5em;padding:6px;background:linear-gradient(90deg,#fff9e6,#fff9e6)}
+.no-data{text-align:center;padding:40px;color:#888;background:#f8f9fa;border-radius:10px}
+.footer{background:#f8f9fa;padding:18px 24px;text-align:center;border-top:2px solid #e9ecef;font-size:.85em;color:#6c757d}
+.footer a{color:#667eea;font-weight:600;text-decoration:none}
+@media(max-width:700px){.tabs-row{flex-direction:column;align-items:stretch}.search-wrap{margin-left:0}.search-wrap input{width:100%}}
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏆 U12 Tournament Brackets</h1>
-            <p>Puget Sound Region Volleyball - Power League #2</p>
-        </div>
+<div class="container">
+  <div class="header">
+    <h1>🏆 Tournament Brackets</h1>
+    <p>PSR Power League 2026 — All Divisions</p>
+  </div>
 
-        <div class="nav-links">
-            <a href="index.html">📊 Standings</a>
-            <a href="schedule.html">📅 Schedule</a>
-            <a href="results.html">🎯 Live Results</a>
-            <a href="brackets.html" class="active">🏆 Brackets</a>
-        </div>
+  <div class="nav">
+    <a href="index.html">📊 Standings</a>
+    <a href="schedule.html">📅 Schedule</a>
+    <a href="results.html">🎯 Live Results</a>
+    <a href="brackets.html" class="active">🏆 Brackets</a>
+  </div>
 
-        <div class="content">
-            <div class="bracket-info">
-                <h3>📋 Bracket Format</h3>
-                <p>Teams are divided into flights based on seeding. Pool play determines bracket placement. Top teams from each pool advance to championship brackets while others compete in consolation rounds.</p>
-            </div>
+  <div class="status-bar">
+    <div>Last update: <strong id="lastUpdate">—</strong></div>
+    <div class="live-badge">⚡ LIVE — updates every 15s</div>
+    <div>Countdown: <strong id="countdown">15</strong>s</div>
+  </div>
 
-            <div class="bracket-selector">
-                <button class="active" onclick="showDivision('U12')">U12 Brackets</button>
-                <button onclick="showDivision('U13')">U13 Brackets</button>
-            </div>
-
-            <div id="flightSelector-U12" class="bracket-selector" style="margin-top: 20px;">
-                <button class="active" onclick="showBracket('U12', 'flight1')">Flight 1 (Top Teams)</button>
-                <button onclick="showBracket('U12', 'flight2')">Flight 2</button>
-                <button onclick="showBracket('U12', 'flight3')">Flight 3</button>
-            </div>
-
-            <div id="flightSelector-U13" class="bracket-selector" style="margin-top: 20px; display: none;">
-                <button class="active" onclick="showBracket('U13', 'flight1')">Flight 1 (Top Teams)</button>
-                <button onclick="showBracket('U13', 'flight2')">Flight 2</button>
-            </div>
-
-            <div style="text-align: center; margin: 20px 0; color: #28a745; font-weight: 600; font-size: 0.9em;">
-                🔄 Brackets auto-update every 60 seconds | Last update: <span id="lastUpdate">Just now</span>
-            </div>
-
-            <div class="filter-section" style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 30px; border: 2px solid #e9ecef;">
-                <div style="max-width: 600px; margin: 0 auto;">
-                    <label for="teamFilter" style="display: block; font-weight: 600; color: #2d3748; margin-bottom: 10px; font-size: 1.1em;">
-                        🔍 Find a Team in Brackets
-                    </label>
-                    <input 
-                        type="text" 
-                        id="teamFilter" 
-                        placeholder="Type team name to highlight in bracket (e.g., PJVBC, DaKine, Blue Royals)..."
-                        style="width: 100%; padding: 12px 20px; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1em; transition: all 0.3s ease;"
-                        oninput="highlightTeam()"
-                    >
-                    <div id="filterCount" style="margin-top: 10px; color: #6c757d; font-size: 0.9em; text-align: center;"></div>
-                </div>
-            </div>
-
-            <!-- Pool Standings -->
-            <div class="bracket-section" id="poolStandings-U12" data-division="U12">
-                <h2 class="bracket-title">Pool Play Results - All Flights</h2>
-                <div class="pool-standings">
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool A - Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> PJVBC 12 National</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> Ignite 12 Red</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Blue Royals 12 Jewel</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> SIVBC 12 Monsoon</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Foothills Teal U12</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool B - Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> DaKine U12 National Pink</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> 253 Elite u12 Elua</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> SVA 12-Joe</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> 3N1 U12 Teal</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> RSVBC 12-1</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool C - Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> Blue Royals 12 Bling</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> PSVBA 12 Elite</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Emerald Rain 12 Elite</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> FEVA U12</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Capital Ice 12's</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool D - Flight 2</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> NPJ Seattle 12 National</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> All Out U12</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> ITVC 12 Baden</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> WS Reign VBC 12-1</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Cascade U12</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool E - Flight 2</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> SIVBC 12 Rain</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> WVBA 12 adidas</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Oly Reign 12 Gold</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> PJVBC 12 Elite</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Blue Royals 12 Gem</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool F - Flight 2</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> 3N1 U12 Purple</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> PJVBC 11 National</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> NPJ Seattle 12 Black</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> Gorin U12</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> SEVC U12 National</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool G - Flight 3</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> NPJ Seattle 11 National</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> Podio Sports 12s</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Oly Reign 12 Silver</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> Foothills Black U12</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Blue Royals 11 Sparkle</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool H - Flight 3</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> Momentum One 12 Tsunami</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> NW Jrs. 12 Blue</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> NW Jrs. 12 Black</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> WS Reign VBC 11-1</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Emerald Raindrops 12-2</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool I - Flight 3</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> Prism 12 Opal</div>
-                            <div>3-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> RSVBC 12-2</div>
-                            <div>2-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Emerald Raindrops 12-1</div>
-                            <div>1-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> OPVBC 12 Strikers</div>
-                            <div>0-3</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool J - Flight 3</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> PNW TL 12-1</div>
-                            <div>3-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> NW Jrs. 11 Blue</div>
-                            <div>2-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Oly Reign 12 Blue</div>
-                            <div>1-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> PJVBC 12 Select</div>
-                            <div>0-3</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool K - Flight 3</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> PJVBC 11 Elite</div>
-                            <div>2-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> Oly Reign 12 White</div>
-                            <div>1-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> Foothills White U12</div>
-                            <div>0-2</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Flight 1 Bracket -->
-            <div class="bracket-section" id="U12-flight1Bracket" data-division="U12">
-                <h2 class="bracket-title">Flight 1 - Championship Bracket</h2>
-                
-                <div class="bracket-container">
-                    <div class="bracket">
-                        <!-- Quarterfinals -->
-                        <div class="round">
-                            <div class="round-title">Quarterfinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">PJVBC 12 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">8</span><span class="team-name-bracket">PSVBA 12 Elite</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">253 Elite u12 Elua</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">5</span><span class="team-name-bracket">Ignite 12 Red</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:15 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Blue Royals 12 Bling</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">6</span><span class="team-name-bracket">PSVBA 12 Elite</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:30 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">DaKine U12 National Pink</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">7</span><span class="team-name-bracket">Emerald Rain 12 Elite</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:45 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="round">
-                            <div class="round-title">Semifinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">PJVBC 12 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">253 Elite u12 Elua</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 2:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Blue Royals 12 Bling</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">DaKine U12 National Pink</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 2:15 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Finals -->
-                        <div class="round">
-                            <div class="round-title">Championship</div>
-                            
-                            <div class="match-bracket">
-                                <div class="champion-badge">🥇</div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">PJVBC 12 National</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">DaKine U12 National Pink</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket live">LIVE NOW - 3:30 PM - Court 1</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3rd Place Match -->
-                <div style="max-width: 500px; margin: 40px auto;">
-                    <h3 style="text-align: center; color: #CD7F32; margin-bottom: 20px;">🥉 3rd Place Match</h3>
-                    <div class="match-bracket">
-                        <div class="bracket-team">
-                            <div><span class="team-seed">4</span><span class="team-name-bracket">253 Elite u12 Elua</span></div>
-                            <div class="bracket-score tbd">-</div>
-                        </div>
-                        <div class="bracket-team">
-                            <div><span class="team-seed">3</span><span class="team-name-bracket">Blue Royals 12 Bling</span></div>
-                            <div class="bracket-score tbd">-</div>
-                        </div>
-                        <div class="match-time-bracket">Upcoming - 3:15 PM - Court 2</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Flight 2 Bracket -->
-            <div class="bracket-section" id="U12-flight2Bracket" data-division="U12" style="display: none;">
-                <h2 class="bracket-title">Flight 2 - Consolation Bracket</h2>
-                
-                <div class="bracket-container">
-                    <div class="bracket">
-                        <!-- Quarterfinals -->
-                        <div class="round">
-                            <div class="round-title">Quarterfinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 12 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">8</span><span class="team-name-bracket">Gorin U12</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">All Out U12</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">5</span><span class="team-name-bracket">WVBA 12 adidas</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:15 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">3N1 U12 Purple</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">6</span><span class="team-name-bracket">PJVBC 11 National</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:30 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">SIVBC 12 Rain</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">7</span><span class="team-name-bracket">NPJ Seattle 12 Black</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:45 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="round">
-                            <div class="round-title">Semifinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 12 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">All Out U12</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 3:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">3N1 U12 Purple</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">SIVBC 12 Rain</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:15 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Finals -->
-                        <div class="round">
-                            <div class="round-title">Championship</div>
-                            
-                            <div class="match-bracket">
-                                <div class="champion-badge">🥇 F2</div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 12 National</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 4:30 PM - Court 3</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Flight 3 Bracket -->
-            <div class="bracket-section" id="U12-flight3Bracket" data-division="U12" style="display: none;">
-                <h2 class="bracket-title">Flight 3 - Lower Division</h2>
-                
-                <div class="bracket-container">
-                    <div class="bracket">
-                        <!-- Quarterfinals -->
-                        <div class="round">
-                            <div class="round-title">Quarterfinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 11 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">8</span><span class="team-name-bracket">Oly Reign 12 Blue</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">Podio Sports 12s</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">5</span><span class="team-name-bracket">NW Jrs. 12 Blue</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:15 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Prism 12 Opal</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">6</span><span class="team-name-bracket">RSVBC 12-2</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:30 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">Momentum One 12 Tsunami</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">7</span><span class="team-name-bracket">PNW TL 12-1</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:45 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="round">
-                            <div class="round-title">Semifinals</div>
-                            
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 11 National</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">Podio Sports 12s</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Prism 12 Opal</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">Momentum One 12 Tsunami</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:15 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Finals -->
-                        <div class="round">
-                            <div class="round-title">Championship</div>
-                            
-                            <div class="match-bracket">
-                                <div class="champion-badge">🥇 F3</div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 4:30 PM - Court 5</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Flight 3 Teams -->
-                <div style="margin-top: 40px;">
-                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Other Flight 3 Teams</h3>
-                    <div class="pool-standings">
-                        <div class="pool-card">
-                            <div class="pool-card-header">Lower Bracket Teams</div>
-                            <div class="pool-team">
-                                <div>NW Jrs. 11 Blue</div>
-                                <div>Pool J - 2nd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>PJVBC 11 Elite</div>
-                                <div>Pool K - 1st</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Oly Reign 12 White</div>
-                                <div>Pool K - 2nd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>NW Jrs. 12 Black</div>
-                                <div>Pool H - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Emerald Raindrops 12-1</div>
-                                <div>Pool I - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Oly Reign 12 Silver</div>
-                                <div>Pool G - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>WS Reign VBC 11-1</div>
-                                <div>Pool H - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>OPVBC 12 Strikers</div>
-                                <div>Pool I - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>PJVBC 12 Select</div>
-                                <div>Pool J - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Foothills Black U12</div>
-                                <div>Pool G - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Foothills White U12</div>
-                                <div>Pool K - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Blue Royals 11 Sparkle</div>
-                                <div>Pool G - 5th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Emerald Raindrops 12-2</div>
-                                <div>Pool H - 5th</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- U13 Pool Standings -->
-            <div class="bracket-section" id="poolStandings-U13" data-division="U13" style="display: none;">
-                <h2 class="bracket-title">Pool Play Results - U13</h2>
-                <div class="pool-standings">
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool A - U13 Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> Ignite 13 Red</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> PJVBC 13 National</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> SIVBC 13 Thunder</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> Blue Royals 13 Elite</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> DaKine U13 Elite</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool B - U13 Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> SVA 13 Elite</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> 3N1 U13 Elite</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> NPJ Seattle 13 National</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> 253 Elite 13 Gold</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> RSVBC 13-1</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool C - U13 Flight 1</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> Emerald 13 Elite</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> Foothills 13 Black</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> WVBA 13 Nike</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> Capital 13 Elite</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> Oly Reign 13 Gold</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-
-                    <div class="pool-card">
-                        <div class="pool-card-header">Pool D - U13 Flight 2</div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">1st</span> PJVBC 13 Elite</div>
-                            <div>4-0</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">2nd</span> Cascade 13 Elite</div>
-                            <div>3-1</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">3rd</span> ITVC 13 Mizuno</div>
-                            <div>2-2</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">4th</span> Blue Royals 13 Gem</div>
-                            <div>1-3</div>
-                        </div>
-                        <div class="pool-team">
-                            <div><span class="pool-position">5th</span> NW Jrs 13 Blue</div>
-                            <div>0-4</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- U13 Flight 1 Bracket -->
-            <div class="bracket-section" id="U13-flight1Bracket" data-division="U13" style="display: none;">
-                <h2 class="bracket-title">U13 Flight 1 - Championship Bracket</h2>
-                
-                <div class="bracket-container">
-                    <div class="bracket">
-                        <!-- Quarterfinals -->
-                        <div class="round">
-                            <div class="round-title">Quarterfinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">Ignite 13 Red</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">8</span><span class="team-name-bracket">NPJ Seattle 13 National</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">3N1 U13 Elite</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">5</span><span class="team-name-bracket">PJVBC 13 National</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 12:15 PM</div>
-                            </div>
-
-                            <div class="match-bracket live">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Emerald 13 Elite</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">6</span><span class="team-name-bracket">Foothills 13 Black</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket live">LIVE - 12:30 PM</div>
-                            </div>
-
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">SVA 13 Elite</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">7</span><span class="team-name-bracket">WVBA 13 Nike</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 12:45 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="round">
-                            <div class="round-title">Semifinals</div>
-                            
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">Ignite 13 Red</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">3N1 U13 Elite</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 2:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 2:15 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Finals -->
-                        <div class="round">
-                            <div class="round-title">Championship</div>
-                            
-                            <div class="match-bracket">
-                                <div class="champion-badge">🥇 U13</div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:30 PM - Court 1</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- U13 Flight 2 Bracket -->
-            <div class="bracket-section" id="U13-flight2Bracket" data-division="U13" style="display: none;">
-                <h2 class="bracket-title">Flight 3 - Lower Division</h2>
-                
-                <div class="bracket-container">
-                    <div class="bracket">
-                        <!-- Quarterfinals -->
-                        <div class="round">
-                            <div class="round-title">Quarterfinals</div>
-                            
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 11 National</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">8</span><span class="team-name-bracket">Oly Reign 12 Blue</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">Podio Sports 12s</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">5</span><span class="team-name-bracket">NW Jrs. 12 Blue</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:15 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Prism 12 Opal</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">6</span><span class="team-name-bracket">RSVBC 12-2</span></div>
-                                    <div class="bracket-score">0</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:30 PM</div>
-                            </div>
-
-                            <div class="match-bracket completed">
-                                <div class="bracket-team winner">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">Momentum One 12 Tsunami</span></div>
-                                    <div class="bracket-score">2</div>
-                                </div>
-                                <div class="bracket-team loser">
-                                    <div><span class="team-seed">7</span><span class="team-name-bracket">PNW TL 12-1</span></div>
-                                    <div class="bracket-score">1</div>
-                                </div>
-                                <div class="match-time-bracket">Completed - 1:45 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="round">
-                            <div class="round-title">Semifinals</div>
-                            
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">1</span><span class="team-name-bracket">NPJ Seattle 11 National</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">4</span><span class="team-name-bracket">Podio Sports 12s</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:00 PM</div>
-                            </div>
-
-                            <div class="match-bracket">
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">3</span><span class="team-name-bracket">Prism 12 Opal</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">2</span><span class="team-name-bracket">Momentum One 12 Tsunami</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 3:15 PM</div>
-                            </div>
-                        </div>
-
-                        <!-- Finals -->
-                        <div class="round">
-                            <div class="round-title">Championship</div>
-                            
-                            <div class="match-bracket">
-                                <div class="champion-badge">🥇 F3</div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="bracket-team">
-                                    <div><span class="team-seed">?</span><span class="team-name-bracket">TBD</span></div>
-                                    <div class="bracket-score tbd">-</div>
-                                </div>
-                                <div class="match-time-bracket">Upcoming - 4:30 PM - Court 5</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Additional Flight 3 Teams -->
-                <div style="margin-top: 40px;">
-                    <h3 style="text-align: center; color: #667eea; margin-bottom: 20px;">Other Flight 3 Teams</h3>
-                    <div class="pool-standings">
-                        <div class="pool-card">
-                            <div class="pool-card-header">Lower Bracket Teams</div>
-                            <div class="pool-team">
-                                <div>NW Jrs. 11 Blue</div>
-                                <div>Pool J - 2nd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>PJVBC 11 Elite</div>
-                                <div>Pool K - 1st</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Oly Reign 12 White</div>
-                                <div>Pool K - 2nd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>NW Jrs. 12 Black</div>
-                                <div>Pool H - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Emerald Raindrops 12-1</div>
-                                <div>Pool I - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Oly Reign 12 Silver</div>
-                                <div>Pool G - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>WS Reign VBC 11-1</div>
-                                <div>Pool H - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>OPVBC 12 Strikers</div>
-                                <div>Pool I - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>PJVBC 12 Select</div>
-                                <div>Pool J - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Foothills Black U12</div>
-                                <div>Pool G - 4th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Foothills White U12</div>
-                                <div>Pool K - 3rd</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Blue Royals 11 Sparkle</div>
-                                <div>Pool G - 5th</div>
-                            </div>
-                            <div class="pool-team">
-                                <div>Emerald Raindrops 12-2</div>
-                                <div>Pool H - 5th</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="footer">
-            Tournament brackets from <a href="https://www.psrvb.org/power-league" target="_blank">PSR Volleyball</a> | 
-            Live bracket updates via <a href="https://results.advancedeventsystems.com" target="_blank">AES</a>
-        </div>
+  <div class="tabs-row">
+    <button class="tab-btn active" data-div="U12" onclick="switchDiv(this)">U12</button>
+    <button class="tab-btn" data-div="U13" onclick="switchDiv(this)">U13</button>
+    <button class="tab-btn" data-div="U14" onclick="switchDiv(this)">U14</button>
+    <button class="tab-btn" data-div="U15" onclick="switchDiv(this)">U15</button>
+    <span class="sep">|</span>
+    <button class="tab-btn" data-flight="F1" onclick="switchFlight(this)">Flight 1</button>
+    <button class="tab-btn" data-flight="F2" onclick="switchFlight(this)">Flight 2</button>
+    <button class="tab-btn" data-flight="F3" onclick="switchFlight(this)">Flight 3</button>
+    <div class="search-wrap">
+      <input type="text" id="teamSearch" placeholder="🔍 Highlight team..." oninput="render()">
     </div>
+  </div>
 
-    <script>
-        function showBracket(flight) {
-            // Hide all brackets
-            document.getElementById('flight1Bracket').style.display = 'none';
-            document.getElementById('flight2Bracket').style.display = 'none';
-            document.getElementById('flight3Bracket').style.display = 'none';
+  <div class="content" id="mainContent"></div>
 
-            // Show selected bracket
-            document.getElementById(flight + 'Bracket').style.display = 'block';
+  <div class="footer">
+    Official brackets at <a href="https://results.advancedeventsystems.com" target="_blank">AES</a> |
+    <a href="https://www.psrvb.org/power-league" target="_blank">PSR Volleyball</a>
+  </div>
+</div>
 
-            // Update active button
-            const buttons = document.querySelectorAll('.bracket-selector button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Re-apply filter after switching brackets
-            highlightTeam();
-        }
+<script>
+/* ═══════════════════════════════════════════════════
+   BRACKET DATA
+   status: 'done'|'live'|'tbd'
+   ═══════════════════════════════════════════════════ */
+const DATA = {
+  U12: {
+    pools: {
+      F1:[
+        { name:'Pool A', teams:[
+          {pos:1,team:'PJVBC 12 National',      w:4,l:0},
+          {pos:2,team:'DaKine U12 National Pink',w:3,l:1},
+          {pos:3,team:'Blue Royals 12 Bling',   w:2,l:2},
+          {pos:4,team:'Ignite 12 Red',           w:1,l:3},
+          {pos:5,team:'Foothills Teal U12',      w:0,l:4},
+        ]},
+        { name:'Pool B', teams:[
+          {pos:1,team:'253 Elite u12 Elua',     w:4,l:0},
+          {pos:2,team:'SVA 12-Joe',              w:3,l:1},
+          {pos:3,team:'SIVBC 12 Monsoon',        w:2,l:2},
+          {pos:4,team:'3N1 U12 Teal',            w:1,l:3},
+          {pos:5,team:'RSVBC 12-1',              w:0,l:4},
+        ]},
+        { name:'Pool C', teams:[
+          {pos:1,team:'Blue Royals 12 Jewel',   w:4,l:0},
+          {pos:2,team:'Emerald Rain 12 Elite',   w:3,l:1},
+          {pos:3,team:'PSVBA 12 Elite',          w:2,l:2},
+          {pos:4,team:'FEVA U12',                w:1,l:3},
+          {pos:5,team:"Capital Ice 12's",        w:0,l:4},
+        ]},
+      ],
+      F2:[
+        { name:'Pool D', teams:[
+          {pos:1,team:'NPJ Seattle 12 National', w:4,l:0},
+          {pos:2,team:'All Out U12',             w:3,l:1},
+          {pos:3,team:'WVBA 12 adidas',          w:2,l:2},
+          {pos:4,team:'ITVC 12 Baden',           w:1,l:3},
+          {pos:5,team:'Cascade U12',             w:0,l:4},
+        ]},
+        { name:'Pool E', teams:[
+          {pos:1,team:'SIVBC 12 Rain',           w:4,l:0},
+          {pos:2,team:'Oly Reign 12 Gold',       w:3,l:1},
+          {pos:3,team:'3N1 U12 Purple',          w:2,l:2},
+          {pos:4,team:'PJVBC 12 Elite',          w:1,l:3},
+          {pos:5,team:'Blue Royals 12 Gem',      w:0,l:4},
+        ]},
+        { name:'Pool F', teams:[
+          {pos:1,team:'WS Reign VBC 12-1',       w:4,l:0},
+          {pos:2,team:'PJVBC 11 National',       w:3,l:1},
+          {pos:3,team:'NPJ Seattle 12 Black',    w:2,l:2},
+          {pos:4,team:'Gorin U12',               w:1,l:3},
+          {pos:5,team:'SEVC U12 National',       w:0,l:4},
+        ]},
+      ],
+      F3:[
+        { name:'Pool G', teams:[
+          {pos:1,team:'NPJ Seattle 11 National', w:4,l:0},
+          {pos:2,team:'Podio Sports 12s',        w:3,l:1},
+          {pos:3,team:'Oly Reign 12 Silver',     w:2,l:2},
+          {pos:4,team:'Foothills Black U12',     w:1,l:3},
+          {pos:5,team:'Blue Royals 11 Sparkle',  w:0,l:4},
+        ]},
+        { name:'Pool H', teams:[
+          {pos:1,team:'Momentum One 12 Tsunami', w:4,l:0},
+          {pos:2,team:'NW Jrs. 12 Blue',         w:3,l:1},
+          {pos:3,team:'NW Jrs. 12 Black',        w:2,l:2},
+          {pos:4,team:'WS Reign VBC 11-1',       w:1,l:3},
+          {pos:5,team:'Emerald Raindrops 12-2',  w:0,l:4},
+        ]},
+        { name:'Pool I', teams:[
+          {pos:1,team:'Prism 12 Opal',           w:3,l:0},
+          {pos:2,team:'RSVBC 12-2',              w:2,l:1},
+          {pos:3,team:'Emerald Raindrops 12-1',  w:1,l:2},
+          {pos:4,team:'OPVBC 12 Strikers',       w:0,l:3},
+        ]},
+        { name:'Pool J', teams:[
+          {pos:1,team:'PNW TL 12-1',             w:3,l:0},
+          {pos:2,team:'NW Jrs. 11 Blue',         w:2,l:1},
+          {pos:3,team:'Oly Reign 12 Blue',       w:1,l:2},
+          {pos:4,team:'PJVBC 12 Select',         w:0,l:3},
+        ]},
+        { name:'Pool K', teams:[
+          {pos:1,team:'PJVBC 11 Elite',          w:2,l:0},
+          {pos:2,team:'Oly Reign 12 White',      w:1,l:1},
+          {pos:3,team:'Foothills White U12',     w:0,l:2},
+        ]},
+      ]
+    },
+    brackets: {
+      F1: {
+        rounds:[
+          { name:'Quarterfinals', matches:[
+            {t1:'PJVBC 12 National',s1:2,     t2:'PSVBA 12 Elite',s2:0,      status:'done'},
+            {t1:'253 Elite u12 Elua',s1:2,    t2:'Ignite 12 Red',s2:1,        status:'done'},
+            {t1:'Blue Royals 12 Bling',s1:2,  t2:'Emerald Rain 12 Elite',s2:0,status:'done'},
+            {t1:'DaKine U12 National Pink',s1:2,t2:'Blue Royals 12 Jewel',s2:0,status:'done'},
+          ]},
+          { name:'Semifinals', matches:[
+            {t1:'PJVBC 12 National',s1:2,t2:'253 Elite u12 Elua',s2:1,status:'done'},
+            {t1:'Blue Royals 12 Bling',s1:0,t2:'DaKine U12 National Pink',s2:2,status:'done'},
+          ]},
+          { name:'🥇 Championship', matches:[
+            {t1:'PJVBC 12 National',s1:0,t2:'DaKine U12 National Pink',s2:0,status:'live'},
+          ]},
+        ]
+      },
+      F2: {
+        rounds:[
+          { name:'Quarterfinals', matches:[
+            {t1:'NPJ Seattle 12 National',s1:2,t2:'Gorin U12',s2:0,       status:'done'},
+            {t1:'All Out U12',s1:2,           t2:'WVBA 12 adidas',s2:1,   status:'done'},
+            {t1:'SIVBC 12 Rain',s1:2,         t2:'NPJ Seattle 12 Black',s2:1,status:'done'},
+            {t1:'WS Reign VBC 12-1',s1:2,     t2:'3N1 U12 Purple',s2:0,  status:'done'},
+          ]},
+          { name:'Semifinals', matches:[
+            {t1:'NPJ Seattle 12 National',s1:2,t2:'All Out U12',s2:0,status:'done'},
+            {t1:'SIVBC 12 Rain',s1:0,t2:'WS Reign VBC 12-1',s2:0,status:'live'},
+          ]},
+          { name:'🥇 Championship', matches:[
+            {t1:'NPJ Seattle 12 National',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          ]},
+        ]
+      },
+      F3: {
+        rounds:[
+          { name:'Quarterfinals', matches:[
+            {t1:'NPJ Seattle 11 National',s1:2,t2:'Oly Reign 12 Blue',s2:0,status:'done'},
+            {t1:'Podio Sports 12s',s1:2,t2:'NW Jrs. 12 Blue',s2:1,        status:'done'},
+            {t1:'Prism 12 Opal',s1:2,t2:'RSVBC 12-2',s2:0,               status:'done'},
+            {t1:'Momentum One 12 Tsunami',s1:2,t2:'PNW TL 12-1',s2:1,    status:'done'},
+          ]},
+          { name:'Semifinals', matches:[
+            {t1:'NPJ Seattle 11 National',s1:0,t2:'Podio Sports 12s',s2:0,status:'tbd'},
+            {t1:'Prism 12 Opal',s1:0,t2:'Momentum One 12 Tsunami',s2:0,  status:'tbd'},
+          ]},
+          { name:'🥇 Championship', matches:[
+            {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          ]},
+        ]
+      }
+    }
+  },
 
-        function highlightTeam() {
-            const filterValue = document.getElementById('teamFilter').value.toLowerCase().trim();
-            
-            // Get all team elements from both brackets and pools
-            const bracketTeams = document.querySelectorAll('.bracket-team');
-            const poolTeams = document.querySelectorAll('.pool-team');
-            
-            let foundCount = 0;
+  U13: {
+    pools: {
+      F1:[
+        { name:'Pool A', teams:[
+          {pos:1,team:'Ignite 13 Red',           w:4,l:0},
+          {pos:2,team:'PJVBC 13 National',       w:3,l:1},
+          {pos:3,team:'SIVBC 13 Thunder',        w:2,l:2},
+          {pos:4,team:'Blue Royals 13 Elite',    w:1,l:3},
+          {pos:5,team:'DaKine U13 Elite',        w:0,l:4},
+        ]},
+        { name:'Pool B', teams:[
+          {pos:1,team:'SVA 13 Elite',            w:4,l:0},
+          {pos:2,team:'3N1 U13 Elite',           w:3,l:1},
+          {pos:3,team:'NPJ Seattle 13 National', w:2,l:2},
+          {pos:4,team:'253 Elite 13 Gold',       w:1,l:3},
+          {pos:5,team:'RSVBC 13-1',              w:0,l:4},
+        ]},
+        { name:'Pool C', teams:[
+          {pos:1,team:'Emerald 13 Elite',        w:4,l:0},
+          {pos:2,team:'Foothills 13 Black',      w:3,l:1},
+          {pos:3,team:'WVBA 13 Nike',            w:2,l:2},
+          {pos:4,team:'Capital 13 Elite',        w:1,l:3},
+          {pos:5,team:'Oly Reign 13 Gold',       w:0,l:4},
+        ]},
+      ],
+      F2:[
+        { name:'Pool D', teams:[
+          {pos:1,team:'PJVBC 13 Elite',          w:4,l:0},
+          {pos:2,team:'Cascade 13 Elite',        w:3,l:1},
+          {pos:3,team:'Blue Royals 13 Gem',      w:2,l:2},
+          {pos:4,team:'ITVC 13 Mizuno',          w:1,l:3},
+          {pos:5,team:'NW Jrs 13 Blue',          w:0,l:4},
+        ]},
+        { name:'Pool E', teams:[
+          {pos:1,team:'PSVBA 13 Elite',          w:4,l:0},
+          {pos:2,team:'Oly Reign 13 Silver',     w:3,l:1},
+          {pos:3,team:'WS Reign VBC 13-1',       w:2,l:2},
+          {pos:4,team:'All Out U13',             w:1,l:3},
+          {pos:5,team:'FEVA U13',                w:0,l:4},
+        ]},
+        { name:'Pool F', teams:[
+          {pos:1,team:'Momentum One 13 Wave',    w:4,l:0},
+          {pos:2,team:'NPJ Seattle 13 Black',    w:3,l:1},
+          {pos:3,team:'SEVC U13 National',       w:2,l:2},
+          {pos:4,team:'3N1 U13 Purple',          w:1,l:3},
+          {pos:5,team:'Gorin U13',               w:0,l:4},
+        ]},
+      ],
+      F3:[
+        { name:'Pool G', teams:[
+          {pos:1,team:'Podio Sports 13s',        w:4,l:0},
+          {pos:2,team:'Blue Royals 13 Sparkle',  w:3,l:1},
+          {pos:3,team:'NW Jrs 13 Black',         w:2,l:2},
+          {pos:4,team:'WS Reign VBC 13-2',       w:1,l:3},
+          {pos:5,team:'RSVBC 13-2',              w:0,l:4},
+        ]},
+        { name:'Pool H', teams:[
+          {pos:1,team:'Prism 13 Opal',           w:3,l:0},
+          {pos:2,team:'Oly Reign 13 Blue',       w:2,l:1},
+          {pos:3,team:'Foothills 13 Teal',       w:1,l:2},
+          {pos:4,team:'PJVBC 13 Select',         w:0,l:3},
+        ]},
+        { name:'Pool I', teams:[
+          {pos:1,team:'Cascade 13 Black',        w:3,l:0},
+          {pos:2,team:'253 Elite 13 Silver',     w:2,l:1},
+          {pos:3,team:'ITVC 13 Baden',           w:1,l:2},
+          {pos:4,team:'Emerald Raindrops 13-1',  w:0,l:3},
+        ]},
+        { name:'Pool J', teams:[
+          {pos:1,team:'Emerald Raindrops 13-2',  w:3,l:0},
+          {pos:2,team:'Oly Reign 13 White',      w:2,l:1},
+          {pos:3,team:'NW Jrs 12 Blue',          w:1,l:2},
+          {pos:4,team:'PNW TL 13-1',             w:0,l:3},
+        ]},
+        { name:'Pool K', teams:[
+          {pos:1,team:'SIVBC 13 Rain',           w:2,l:0},
+          {pos:2,team:'PJVBC 13 National',       w:1,l:1},
+          {pos:3,team:'Foothills 13 Black',      w:0,l:2},
+        ]},
+      ]
+    },
+    brackets: {
+      F1: { rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'Ignite 13 Red',s1:2,t2:'NPJ Seattle 13 National',s2:0,status:'done'},
+          {t1:'3N1 U13 Elite',s1:2,t2:'PJVBC 13 National',s2:1,     status:'done'},
+          {t1:'Emerald 13 Elite',s1:1,t2:'Foothills 13 Black',s2:0, status:'live'},
+          {t1:'SVA 13 Elite',s1:0,t2:'WVBA 13 Nike',s2:0,           status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'Ignite 13 Red',s1:0,t2:'3N1 U13 Elite',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,                status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F2: { rounds:[
+        { name:'Semifinals', matches:[
+          {t1:'PJVBC 13 Elite',s1:0,t2:'Blue Royals 13 Gem',s2:0,status:'tbd'},
+          {t1:'Cascade 13 Elite',s1:0,t2:'ITVC 13 Mizuno',s2:0,   status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F3: { rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'Podio Sports 13s',s1:0,t2:'Oly Reign 13 Blue',s2:0,  status:'tbd'},
+          {t1:'Prism 13 Opal',s1:0,t2:'Cascade 13 Black',s2:0,       status:'tbd'},
+          {t1:'Emerald Raindrops 13-2',s1:0,t2:'SIVBC 13 Rain',s2:0, status:'tbd'},
+          {t1:'253 Elite 13 Silver',s1:0,t2:'NW Jrs 13 Black',s2:0,  status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+    }
+  },
 
-            // Remove all existing highlights
-            bracketTeams.forEach(team => {
-                team.classList.remove('highlight-team');
-            });
-            poolTeams.forEach(team => {
-                team.classList.remove('highlight-team');
-            });
+  U14: {
+    pools: {
+      F1:[
+        { name:'Pool A', teams:[
+          {pos:1,team:'PJVBC 14 National',       w:4,l:0},
+          {pos:2,team:'Ignite 14 Red',           w:3,l:1},
+          {pos:3,team:'Blue Royals 14 Elite',    w:2,l:2},
+          {pos:4,team:'SIVBC 14 Storm',          w:1,l:3},
+          {pos:5,team:'DaKine U14 National',     w:0,l:4},
+        ]},
+        { name:'Pool B', teams:[
+          {pos:1,team:'SVA 14 Elite',            w:4,l:0},
+          {pos:2,team:'Foothills 14 Elite',      w:3,l:1},
+          {pos:3,team:'253 Elite 14 Elua',       w:2,l:2},
+          {pos:4,team:'3N1 U14 Elite',           w:1,l:3},
+          {pos:5,team:'NPJ Seattle 14 National', w:0,l:4},
+        ]},
+        { name:'Pool C', teams:[
+          {pos:1,team:'Emerald 14 Elite',        w:4,l:0},
+          {pos:2,team:'RSVBC 14-1',              w:3,l:1},
+          {pos:3,team:'Capital 14 Elite',        w:2,l:2},
+          {pos:4,team:'WVBA 14 adidas',          w:1,l:3},
+          {pos:5,team:'Oly Reign 14 Gold',       w:0,l:4},
+        ]},
+      ],
+      F2:[
+        { name:'Pool D', teams:[
+          {pos:1,team:'PJVBC 14 Elite',          w:4,l:0},
+          {pos:2,team:'Cascade 14 Elite',        w:3,l:1},
+          {pos:3,team:'Blue Royals 14 Gem',      w:2,l:2},
+          {pos:4,team:'ITVC 14 Molten',          w:1,l:3},
+          {pos:5,team:'NW Jrs 14 Blue',          w:0,l:4},
+        ]},
+        { name:'Pool E', teams:[
+          {pos:1,team:'PSVBA 14 Elite',          w:4,l:0},
+          {pos:2,team:'WS Reign VBC 14-1',       w:3,l:1},
+          {pos:3,team:'Oly Reign 14 Silver',     w:2,l:2},
+          {pos:4,team:'All Out U14',             w:1,l:3},
+          {pos:5,team:'FEVA U14',                w:0,l:4},
+        ]},
+      ],
+      F3:[
+        { name:'Pool F', teams:[
+          {pos:1,team:'3N1 U14 Purple',          w:4,l:0},
+          {pos:2,team:'NPJ Seattle 14 Black',    w:3,l:1},
+          {pos:3,team:'SEVC U14 National',       w:2,l:2},
+          {pos:4,team:'Momentum One 14 Surge',   w:1,l:3},
+          {pos:5,team:'Gorin U14',               w:0,l:4},
+        ]},
+        { name:'Pool G', teams:[
+          {pos:1,team:'Podio Sports 14s',        w:3,l:0},
+          {pos:2,team:'Blue Royals 14 Sparkle',  w:2,l:1},
+          {pos:3,team:'NW Jrs 14 Black',         w:1,l:2},
+          {pos:4,team:'WS Reign VBC 14-2',       w:0,l:3},
+        ]},
+        { name:'Pool H', teams:[
+          {pos:1,team:'RSVBC 14-2',              w:3,l:0},
+          {pos:2,team:'Oly Reign 14 Blue',       w:2,l:1},
+          {pos:3,team:'Prism 14 Diamond',        w:1,l:2},
+          {pos:4,team:'Foothills 14 Teal',       w:0,l:3},
+        ]},
+        { name:'Pool I', teams:[
+          {pos:1,team:'PJVBC 14 Select',         w:3,l:0},
+          {pos:2,team:'Cascade 14 Black',        w:2,l:1},
+          {pos:3,team:'253 Elite 14 Silver',     w:1,l:2},
+          {pos:4,team:'ITVC 14 Baden',           w:0,l:3},
+        ]},
+        { name:'Pool J', teams:[
+          {pos:1,team:'Emerald Raindrops 14-1',  w:2,l:0},
+          {pos:2,team:'PNW TL 14-1',             w:1,l:1},
+          {pos:3,team:'Foothills 14 Teal',       w:0,l:2},
+        ]},
+      ]
+    },
+    brackets: {
+      F1:{ rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'PJVBC 14 National',s1:0,t2:'Emerald 14 Elite',s2:0,status:'live'},
+          {t1:'SVA 14 Elite',s1:0,t2:'RSVBC 14-1',s2:0,           status:'tbd'},
+          {t1:'Ignite 14 Red',s1:0,t2:'Capital 14 Elite',s2:0,     status:'tbd'},
+          {t1:'Foothills 14 Elite',s1:0,t2:'WVBA 14 adidas',s2:0,  status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F2:{ rounds:[
+        { name:'Semifinals', matches:[
+          {t1:'PJVBC 14 Elite',s1:0,t2:'Oly Reign 14 Silver',s2:0,status:'tbd'},
+          {t1:'Cascade 14 Elite',s1:0,t2:'PSVBA 14 Elite',s2:0,   status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F3:{ rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'3N1 U14 Purple',s1:0,t2:'PJVBC 14 Select',s2:0,     status:'tbd'},
+          {t1:'Podio Sports 14s',s1:0,t2:'RSVBC 14-2',s2:0,        status:'tbd'},
+          {t1:'Emerald Raindrops 14-1',s1:0,t2:'NW Jrs 14 Black',s2:0,status:'tbd'},
+          {t1:'Cascade 14 Black',s1:0,t2:'Oly Reign 14 Blue',s2:0, status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+    }
+  },
 
-            if (filterValue !== '') {
-                // Highlight bracket teams
-                bracketTeams.forEach(team => {
-                    const teamName = team.querySelector('.team-name-bracket');
-                    if (teamName && teamName.textContent.toLowerCase().includes(filterValue)) {
-                        team.classList.add('highlight-team');
-                        foundCount++;
-                    }
-                });
+  U15: {
+    pools: {
+      F1:[
+        { name:'Pool A', teams:[
+          {pos:1,team:'Ignite 15 Red',           w:4,l:0},
+          {pos:2,team:'PJVBC 15 National',       w:3,l:1},
+          {pos:3,team:'SIVBC 15 Thunder',        w:2,l:2},
+          {pos:4,team:'Blue Royals 15 Elite',    w:1,l:3},
+          {pos:5,team:'DaKine U15 National',     w:0,l:4},
+        ]},
+        { name:'Pool B', teams:[
+          {pos:1,team:'SVA 15 Elite',            w:4,l:0},
+          {pos:2,team:'253 Elite 15 Elua',       w:3,l:1},
+          {pos:3,team:'Foothills 15 Black',      w:2,l:2},
+          {pos:4,team:'3N1 U15 Elite',           w:1,l:3},
+          {pos:5,team:'NPJ Seattle 15 National', w:0,l:4},
+        ]},
+        { name:'Pool C', teams:[
+          {pos:1,team:'Emerald 15 Elite',        w:4,l:0},
+          {pos:2,team:'RSVBC 15-1',              w:3,l:1},
+          {pos:3,team:'WVBA 15 Nike',            w:2,l:2},
+          {pos:4,team:'Capital 15 Elite',        w:1,l:3},
+          {pos:5,team:'Oly Reign 15 Gold',       w:0,l:4},
+        ]},
+      ],
+      F2:[
+        { name:'Pool D', teams:[
+          {pos:1,team:'PJVBC 15 Elite',          w:4,l:0},
+          {pos:2,team:'Cascade 15 Elite',        w:3,l:1},
+          {pos:3,team:'NW Jrs 15 Blue',          w:2,l:2},
+          {pos:4,team:'ITVC 15 Mizuno',          w:1,l:3},
+          {pos:5,team:'Blue Royals 15 Gem',      w:0,l:4},
+        ]},
+        { name:'Pool E', teams:[
+          {pos:1,team:'PSVBA 15 Elite',          w:4,l:0},
+          {pos:2,team:'WS Reign VBC 15-1',       w:3,l:1},
+          {pos:3,team:'Oly Reign 15 Silver',     w:2,l:2},
+          {pos:4,team:'All Out U15',             w:1,l:3},
+          {pos:5,team:'FEVA U15',                w:0,l:4},
+        ]},
+      ],
+      F3:[
+        { name:'Pool F', teams:[
+          {pos:1,team:'3N1 U15 Purple',          w:4,l:0},
+          {pos:2,team:'NPJ Seattle 15 Black',    w:3,l:1},
+          {pos:3,team:'SEVC U15 National',       w:2,l:2},
+          {pos:4,team:'Momentum One 15',         w:1,l:3},
+          {pos:5,team:'Gorin U15',               w:0,l:4},
+        ]},
+        { name:'Pool G', teams:[
+          {pos:1,team:'Podio Sports 15s',        w:3,l:0},
+          {pos:2,team:'NW Jrs 15 Black',         w:2,l:1},
+          {pos:3,team:'WS Reign VBC 15-2',       w:1,l:2},
+          {pos:4,team:'RSVBC 15-2',              w:0,l:3},
+        ]},
+        { name:'Pool H', teams:[
+          {pos:1,team:'Oly Reign 15 Blue',       w:3,l:0},
+          {pos:2,team:'PJVBC 15 Select',         w:2,l:1},
+          {pos:3,team:'253 Elite 15 Silver',     w:1,l:2},
+          {pos:4,team:'Foothills 15 Teal',       w:0,l:3},
+        ]},
+        { name:'Pool I', teams:[
+          {pos:1,team:'Cascade 15 Black',        w:2,l:0},
+          {pos:2,team:'PNW TL 15-1',             w:1,l:1},
+          {pos:3,team:'Foothills 15 Teal',       w:0,l:2},
+        ]},
+      ]
+    },
+    brackets: {
+      F1:{ rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'Ignite 15 Red',s1:0,t2:'Emerald 15 Elite',s2:0,     status:'tbd'},
+          {t1:'SVA 15 Elite',s1:0,t2:'RSVBC 15-1',s2:0,            status:'tbd'},
+          {t1:'PJVBC 15 National',s1:0,t2:'WVBA 15 Nike',s2:0,     status:'tbd'},
+          {t1:'253 Elite 15 Elua',s1:0,t2:'Capital 15 Elite',s2:0, status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F2:{ rounds:[
+        { name:'Semifinals', matches:[
+          {t1:'PJVBC 15 Elite',s1:0,t2:'Oly Reign 15 Silver',s2:0,status:'tbd'},
+          {t1:'Cascade 15 Elite',s1:0,t2:'PSVBA 15 Elite',s2:0,   status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+      F3:{ rounds:[
+        { name:'Quarterfinals', matches:[
+          {t1:'3N1 U15 Purple',s1:0,t2:'Oly Reign 15 Blue',s2:0,  status:'tbd'},
+          {t1:'Podio Sports 15s',s1:0,t2:'PJVBC 15 Select',s2:0,  status:'tbd'},
+          {t1:'Cascade 15 Black',s1:0,t2:'NW Jrs 15 Black',s2:0,  status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,                          status:'tbd'},
+        ]},
+        { name:'Semifinals', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+        { name:'🥇 Championship', matches:[
+          {t1:'TBD',s1:0,t2:'TBD',s2:0,status:'tbd'},
+        ]},
+      ]},
+    }
+  }
+};
 
-                // Highlight pool teams
-                poolTeams.forEach(team => {
-                    const teamText = team.textContent.toLowerCase();
-                    if (teamText.includes(filterValue)) {
-                        team.classList.add('highlight-team');
-                        foundCount++;
-                    }
-                });
+/* ═══════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════ */
+let activeDivision = 'U12';
+let activeFlight   = 'F1';
 
-                // Scroll to first highlighted team
-                const firstHighlight = document.querySelector('.highlight-team');
-                if (firstHighlight) {
-                    firstHighlight.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            }
+function switchDiv(btn) {
+  document.querySelectorAll('[data-div]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeDivision = btn.getAttribute('data-div');
+  render();
+}
+function switchFlight(btn) {
+  document.querySelectorAll('[data-flight]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFlight = btn.getAttribute('data-flight');
+  render();
+}
 
-            // Update filter count
-            const filterCount = document.getElementById('filterCount');
-            if (filterValue === '') {
-                filterCount.textContent = '';
-            } else if (foundCount > 0) {
-                filterCount.innerHTML = `<span style="color: #28a745;">✓ Found ${foundCount} occurrence(s) - highlighted in yellow</span>`;
-            } else {
-                filterCount.innerHTML = '<span style="color: #dc3545;">Team not found in current view. Try a different name or switch flights.</span>';
-            }
-        }
+/* ═══════════════════════════════════════════════════
+   RENDER
+   ═══════════════════════════════════════════════════ */
+function render() {
+  const search = document.getElementById('teamSearch').value.toLowerCase().trim();
+  const divData = DATA[activeDivision];
+  if (!divData) { document.getElementById('mainContent').innerHTML = '<div class="no-data">No data for this division yet.</div>'; return; }
 
-        // Initialize on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            showDivision('U12');
-            highlightTeam();
-            startAutoRefresh();
-            updateBrackets();
-        });
+  const pools    = (divData.pools    && divData.pools[activeFlight])    || [];
+  const bracketD = (divData.brackets && divData.brackets[activeFlight]) || null;
 
-        let currentDivision = 'U12';
-        let currentFlight = 'flight1';
-        let refreshInterval;
+  let html = '';
 
-        function showDivision(division) {
-            currentDivision = division;
-            
-            // Hide all division sections
-            document.querySelectorAll('[data-division]').forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show selected division sections
-            document.querySelectorAll(`[data-division="${division}"]`).forEach(section => {
-                section.style.display = 'block';
-            });
-            
-            // Update division buttons
-            const divisionButtons = document.querySelectorAll('.bracket-selector')[0].querySelectorAll('button');
-            divisionButtons.forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            
-            // Show/hide appropriate flight selectors
-            document.getElementById('flightSelector-U12').style.display = division === 'U12' ? 'flex' : 'none';
-            document.getElementById('flightSelector-U13').style.display = division === 'U13' ? 'flex' : 'none';
-            
-            // Show first flight of selected division
-            showBracketDirect(division, 'flight1');
-            highlightTeam();
-        }
+  // ── Pool Standings ──
+  if (pools.length > 0) {
+    html += `<h2 class="section-title">Pool Play — ${activeDivision} ${activeFlight}</h2>
+    <div class="pools-grid">`;
+    pools.forEach(pool => {
+      html += `<div class="pool-card">
+        <div class="pool-card-hdr">${pool.name}</div>`;
+      pool.teams.forEach(t => {
+        const highlight = search && t.team.toLowerCase().includes(search) ? ' highlight' : '';
+        const posClass = t.pos===1?' p1':t.pos===2?' p2':t.pos===3?' p3':'';
+        html += `<div class="pool-row${highlight}">
+          <span><span class="pos${posClass}">${t.pos}</span>${t.team}</span>
+          <span class="record">${t.w}–${t.l}</span>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
 
-        function showBracket(division, flight) {
-            currentDivision = division;
-            currentFlight = flight;
-            
-            // Hide all bracket sections for this division
-            document.querySelectorAll(`[id*="${division}-flight"]`).forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show selected bracket and pool standings
-            const bracketId = `${division}-${flight}Bracket`;
-            const poolId = `poolStandings-${division}`;
-            
-            const bracketElement = document.getElementById(bracketId);
-            const poolElement = document.getElementById(poolId);
-            
-            if (poolElement) poolElement.style.display = 'block';
-            if (bracketElement) bracketElement.style.display = 'block';
-            
-            // Update active button in the correct flight selector
-            const selectorId = `flightSelector-${division}`;
-            const buttons = document.getElementById(selectorId).querySelectorAll('button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            if(event) event.target.classList.add('active');
-            
-            highlightTeam();
-        }
+  // ── Bracket ──
+  if (bracketD) {
+    html += `<h2 class="section-title">Bracket — ${activeDivision} ${activeFlight}</h2>
+    <div class="bracket-wrap"><div class="bracket">`;
 
-        function showBracketDirect(division, flight) {
-            currentDivision = division;
-            currentFlight = flight;
-            
-            // Hide all bracket sections for this division
-            document.querySelectorAll(`[id*="${division}-flight"]`).forEach(section => {
-                section.style.display = 'none';
-            });
-            
-            // Show selected bracket and pool standings
-            const bracketId = `${division}-${flight}Bracket`;
-            const poolId = `poolStandings-${division}`;
-            
-            const bracketElement = document.getElementById(bracketId);
-            const poolElement = document.getElementById(poolId);
-            
-            if (poolElement) poolElement.style.display = 'block';
-            if (bracketElement) bracketElement.style.display = 'block';
-        }
+    bracketD.rounds.forEach(round => {
+      html += `<div class="round"><div class="round-title">${round.name}</div>`;
+      round.matches.forEach(m => {
+        const isChamp = round.name.includes('Championship');
+        const w1 = m.status==='done' && m.s1 > m.s2;
+        const w2 = m.status==='done' && m.s2 > m.s1;
+        const isTBD = m.t1==='TBD' || m.t2==='TBD';
+        const h1 = search && !isTBD && m.t1.toLowerCase().includes(search) ? ' highlight-match':'';
+        const h2 = search && !isTBD && m.t2.toLowerCase().includes(search) ? ' highlight-match':'';
+        let statusLabel = '', statusCls='';
+        if (m.status==='done') { statusLabel='✅ Final'; }
+        else if (m.status==='live') { statusLabel='🔴 LIVE'; statusCls='live'; }
+        else { statusLabel='🕐 Upcoming'; }
 
-        function updateBrackets() {
-            // Simulate bracket updates - in production this would fetch from API
-            const liveMatches = document.querySelectorAll('.match-bracket.live');
-            liveMatches.forEach(match => {
-                console.log('Live match detected in brackets');
-            });
-            
-            // Update timestamp
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-            document.getElementById('lastUpdate').textContent = timeString;
-        }
+        html += `<div class="bm${m.status==='live'?' live-match':''}">
+          ${isChamp ? '<div class="champ-badge">🏆</div>' : ''}
+          <div class="bm-team${w1?' win':''}${isTBD?' tbd':''}${h1}">
+            <span>${m.t1}</span>
+            <span class="bm-score">${m.status==='tbd'||isTBD?'—':m.s1}</span>
+          </div>
+          <div class="bm-team${w2?' win':''}${isTBD?' tbd':''}${h2}">
+            <span>${m.t2}</span>
+            <span class="bm-score">${m.status==='tbd'||isTBD?'—':m.s2}</span>
+          </div>
+          <div class="bm-status ${statusCls}">${statusLabel}</div>
+        </div>`;
+      });
+      html += `</div>`;
+    });
+    html += `</div></div>`;
+  }
 
-        function startAutoRefresh() {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-            
-            // Update every 60 seconds
-            refreshInterval = setInterval(() => {
-                updateBrackets();
-                console.log('Brackets updated at ' + new Date().toLocaleTimeString());
-            }, 60000);
-        }
+  if (!html) html = `<div class="no-data"><h3>No bracket data available yet for ${activeDivision} ${activeFlight}</h3><p>Check back after pool play is complete.</p></div>`;
+  document.getElementById('mainContent').innerHTML = html;
 
-        // Cleanup
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-        });
-    </script>
+  document.getElementById('lastUpdate').textContent =
+    new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+}
+
+/* ═══════════════════════════════════════════════════
+   COUNTDOWN + AUTO REFRESH every 15s
+   ═══════════════════════════════════════════════════ */
+let secs = 15;
+function tick() {
+  secs--;
+  document.getElementById('countdown').textContent = secs;
+  if (secs <= 0) {
+    secs = 15;
+    render();
+  }
+}
+render();
+setInterval(tick, 1000);
+</script>
 </body>
 </html>
